@@ -1,0 +1,15 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+	background: #090909;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+}
+
+@layer components {
+	.primarybtn {
+		@apply text-sm py-2 px-3 rounded-xl font-medium bg-gradient-to-b from-[#1d43ff] via-[#0025df] to-[#0025df] text-neutral-50 inline-flex items-center justify-center select-none shadow-md;
+	}
+}
