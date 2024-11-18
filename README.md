@@ -152,7 +152,11 @@ The boilerplate requires a Supabase database with the following table structure:
 
 ## 🌐 Network Configuration
 
-This boilerplate is pre-configured to work with the Sepolia Base Network. This testnet environment allows you to:
+This boilerplate is pre-configured to work with the Sepolia Base Network. To switch to a different network, you'll need to modify the network configuration in these files:
+
+1. `pages/_app.tsx` - Update the chain configuration and RPC endpoints
+2. `utils/embeddedWalletClient.ts` - Update the public client chain configuration
+3. `components/WatchenAuth/WalletAltUi/EmbeddedWalletAltUi.tsx` - Update the chain import
 
 - Test your application with test tokens
 - Interact with Base's testnet infrastructure
