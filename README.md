@@ -165,6 +165,32 @@ This boilerplate is pre-configured to work with the Sepolia Base Network. To swi
 
 To switch to a different network, modify the network configuration in your environment variables.
 
+## 🛣️ Roadmap
+
+- 📱 **Progressive Web App (PWA)**
+  - Native app-like experience on mobile devices
+  - Push notifications support
+  - Offline functionality
+- 🔒 **Privacy & Security**
+  - Snowflake-Tor integration for enhanced privacy
+  - Censorship resistance capabilities
+- 🌉 **Cross-Chain Integration**
+  - Wormhole Connect integration for seamless cross-chain transfers
+  - Alternative bridge support (Across Protocol)
+- 📱 **Mobile Platform Support**
+  - iOS native app support
+  - Android native app support
+- 🔑 **Extended Authentication**
+
+  - Email authentication
+  - Passkey support
+  - Phone number verification
+  - Apple Sign-in
+
+- 🧠 **Smart Ethereum Accounts**
+  - ERC-4337 Account Abstraction support
+  - Smart account creation and management
+
 ## 🤝 Support, Bugs and Suggestions
 
 - Reach out:
