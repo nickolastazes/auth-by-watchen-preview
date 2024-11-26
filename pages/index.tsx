@@ -1,7 +1,5 @@
 import React from 'react';
 import { useRouter } from 'next/router';
-import { GetServerSideProps } from 'next';
-import { getSession } from 'next-auth/react';
 
 export default function Home() {
 	const router = useRouter();
@@ -85,20 +83,3 @@ export default function Home() {
 		</main>
 	);
 }
-
-export const getServerSideProps: GetServerSideProps = async (context) => {
-	const session = await getSession(context);
-
-	if (session) {
-		return {
-			redirect: {
-				destination: '/app',
-				permanent: false,
-			},
-		};
-	}
-
-	return {
-		props: {},
-	};
-};
