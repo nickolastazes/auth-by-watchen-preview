@@ -174,9 +174,8 @@ To switch to a different network, modify the network configuration in your envir
 - 🔒 **Privacy & Security**
   - Snowflake-Tor integration for enhanced privacy
   - Censorship resistance capabilities
-- 🌉 **Cross-Chain Integration**
-  - Wormhole Connect integration for seamless cross-chain transfers
-  - Alternative bridge support (Across Protocol)
+- 🌉 **Cross-Chain Functionality**
+  - Relay integration or alternative (eg Across)
 - 📱 **Mobile Platform Support**
   - iOS native app support
   - Android native app support
