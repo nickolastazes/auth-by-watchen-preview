@@ -19,9 +19,14 @@ Auth by Watchen is an opinionated Next.js boilerplate with built-in authenticati
   - Supabase Integration for data persistence
   - Responsive design out of the box
 - 🛠️ **Architecture**
+
   - Clean project structure
   - Production-ready configuration
   - Easy to customize and extend
+
+## 🔮 Authentication Flow Diagram
+
+![Authentication Flow Diagram](https://watchen.xyz/diagram-auth-by-watchen-preview.png)
 
 ## 🚀 Quick Start
 
