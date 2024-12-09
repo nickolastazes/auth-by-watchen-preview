@@ -138,23 +138,6 @@ yarn dev
 └── public/             # Static assets
 ```
 
-## 📚 Database Schema
-
-The boilerplate requires a Supabase database with the following table structure:
-
-**Table: users**
-| Column | Type | Description |
-|--------|------|-------------|
-| id | uuid | Primary key, auto-generated |
-| created_at | timestamp | Auto-generated timestamp |
-| provider | text | Authentication provider (e.g., 'google', 'twitter') |
-| username_email | text | User's username or email |
-| address | text | Ethereum wallet address |
-| encrypted_private_key | text | Encrypted wallet private key |
-| iv | text | Initialization vector for encryption |
-| salt | text | Salt for encryption |
-| export_account | boolean | Flag for account export status |
-
 ## 🌐 Network Configuration
 
 This boilerplate is pre-configured to work with the Sepolia Base Network. To switch to a different network, you'll need to modify the network configuration in these files:
