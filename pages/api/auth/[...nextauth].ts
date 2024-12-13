@@ -166,7 +166,7 @@ export function getAuthOptions(req: IncomingMessage): NextAuthOptions {
 
 					// Fetch the user's Ethereum address
 					const { data: userData, error } = await supabase
-						.from('users')
+						.from('auth_by_watchen_users')
 						.select('address, encrypted_private_key, iv')
 						.eq(
 							'username_email',
@@ -192,7 +192,7 @@ export function getAuthOptions(req: IncomingMessage): NextAuthOptions {
 				try {
 					// Check if user already exists
 					const { data: existingUser } = await supabase
-						.from('users')
+						.from('auth_by_watchen_users')
 						.select('*')
 						.eq(
 							'username_email',
@@ -230,16 +230,18 @@ export function getAuthOptions(req: IncomingMessage): NextAuthOptions {
 						}
 
 						// Insert new user with Ethereum account details
-						const { error } = await supabase.from('users').insert({
-							provider: account?.provider,
-							username_email:
-								user.email || user.username || profile?.name || user.id,
-							address: ethereumAddress,
-							encrypted_private_key: encryptedPrivateKey,
-							iv: iv,
-							salt: salt,
-							export_account: false,
-						});
+						const { error } = await supabase
+							.from('auth_by_watchen_users')
+							.insert({
+								provider: account?.provider,
+								username_email:
+									user.email || user.username || profile?.name || user.id,
+								address: ethereumAddress,
+								encrypted_private_key: encryptedPrivateKey,
+								iv: iv,
+								salt: salt,
+								export_account: false,
+							});
 
 						if (error) throw error;
 					}

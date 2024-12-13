@@ -20,7 +20,7 @@ export default async function handler(
 
 	try {
 		const { data: userData, error } = await supabase
-			.from('users')
+			.from('auth_by_watchen_users')
 			.select('encrypted_private_key, iv, salt')
 			.eq('username_email', session.user.email || session.user.username)
 			.single();

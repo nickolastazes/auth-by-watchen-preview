@@ -332,7 +332,7 @@ export default function EmbeddedWalletAltUi() {
 		) {
 			try {
 				await supabase
-					.from('users')
+					.from('auth_by_watchen_users')
 					.delete()
 					.eq('username_email', session?.user.email || session?.user.username);
 				localStorage.removeItem('last-used');

@@ -54,7 +54,7 @@ cp .env.local.example .env.local
 
 ```sql
 -- Create the users table with required fields
-create table users (
+create table auth_by_watchen_users (
   id uuid default uuid_generate_v4() primary key,
   created_at timestamp with time zone default timezone('utc'::text, now()) not null,
   provider text,
@@ -68,7 +68,7 @@ create table users (
 
 -- Enable public access (security is handled at the application level)
 create policy "Enable all operations for users table"
-  on users
+  on auth_by_watchen_users
   for all
   using (true)
   with check (true);
@@ -78,7 +78,7 @@ create policy "Enable all operations for users table"
 
 The boilerplate requires a Supabase database with the following table structure:
 
-**Table: users**
+**Table: auth_by_watchen_users**
 | Column | Type | Description |
 |--------|------|-------------|
 | id | uuid | Primary key, auto-generated |
