@@ -136,7 +136,7 @@ This boilerplate is pre-configured to work with the Sepolia Base Network. To swi
 
 1. `pages/_app.tsx` - Update the chain configuration and RPC endpoints
 2. `utils/embeddedWalletClient.ts` - Update the public client chain configuration
-3. `components/WatchenAuth/WalletAltUi/EmbeddedWalletAltUi.tsx` - Update the chain import
+3. `components/WatchenAuth/WalletUi/EmbeddedWalletUi.tsx` - Update the chain import
 
 - Test your application with test tokens
 - Interact with Base's testnet infrastructure

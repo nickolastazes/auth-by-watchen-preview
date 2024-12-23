@@ -13,7 +13,7 @@ import TransakOnRamp from '../TransakOnRamp';
 import TransakOffRamp from '../TransakOffRamp';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function EmbeddedWalletAltUi() {
+export default function EmbeddedWalletUi() {
 	// ANIMATIONS
 	const menuVariants = {
 		hidden: {

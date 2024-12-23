@@ -2,8 +2,8 @@ import React from 'react';
 import { useAccount } from 'wagmi';
 import { useSession } from 'next-auth/react';
 import { Toaster } from 'sonner';
-import EmbeddedWalletAltUi from './WalletAltUi/EmbeddedWalletAltUi';
-import ExternalWalletAltUi from './WalletAltUi/ExternalWalletAltUi';
+import EmbeddedWalletUi from './WalletUi/EmbeddedWalletUi';
+import ExternalWalletUi from './WalletUi/ExternalWalletUi';
 
 function Wallet() {
 	const { address: externalAddress } = useAccount();
@@ -12,10 +12,10 @@ function Wallet() {
 		<section>
 			<Toaster position='bottom-right' richColors />
 			{session && status === 'authenticated' && !externalAddress && (
-				<EmbeddedWalletAltUi />
+				<EmbeddedWalletUi />
 			)}
 			{session && status === 'authenticated' && externalAddress && (
-				<ExternalWalletAltUi />
+				<ExternalWalletUi />
 			)}
 		</section>
 	);

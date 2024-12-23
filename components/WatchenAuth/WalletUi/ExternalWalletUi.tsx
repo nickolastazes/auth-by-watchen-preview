@@ -9,7 +9,7 @@ import { baseSepolia } from 'viem/chains';
 import { Drawer } from 'vaul';
 import { motion } from 'framer-motion';
 
-export default function ExternalWalletAltUi() {
+export default function ExternalWalletUi() {
 	// ANIMATIONS
 	const containerVariants = {
 		hidden: { opacity: 0 },
