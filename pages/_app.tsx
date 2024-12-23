@@ -7,8 +7,7 @@ import { baseSepolia } from 'wagmi/chains';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { SessionProvider } from 'next-auth/react';
 import type { Session } from 'next-auth';
-import { SessionContextProvider } from '@supabase/auth-helpers-react';
-import { supabase } from '../utils/supabase';
+
 import Head from 'next/head';
 import { AuthKitProvider } from '@farcaster/auth-kit';
 
@@ -57,22 +56,20 @@ export default function App({
 		<SessionProvider refetchInterval={0} session={pageProps.session}>
 			<WagmiProvider config={config}>
 				<QueryClientProvider client={queryClient}>
-					<SessionContextProvider supabaseClient={supabase}>
-						<Head>
-							<meta
-								name='viewport'
-								content='width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no'
-							/>
-							<title>Watchen Auth</title>
-							<meta name='description' content='Watchen Auth' />
-							<link rel='icon' href='/watchen-icon.svg' />
-						</Head>
-						<main className={inter.className}>
-							<AuthKitProvider config={farcasterConfig}>
-								<Component {...pageProps} />
-							</AuthKitProvider>
-						</main>
-					</SessionContextProvider>
+					<Head>
+						<meta
+							name='viewport'
+							content='width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover, user-scalable=no'
+						/>
+						<title>Watchen Auth</title>
+						<meta name='description' content='Watchen Auth' />
+						<link rel='icon' href='/watchen-icon.svg' />
+					</Head>
+					<main className={inter.className}>
+						<AuthKitProvider config={farcasterConfig}>
+							<Component {...pageProps} />
+						</AuthKitProvider>
+					</main>
 				</QueryClientProvider>
 			</WagmiProvider>
 		</SessionProvider>

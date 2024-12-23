@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { supabase } from '../../utils/supabase';
 import { decryptPrivateKey } from '../../utils/generateEthereumAccount';
 import { getServerSession } from 'next-auth/next';
 import { getAuthOptions } from './auth/[...nextauth]';
+import { getCollection } from '../../utils/db';
 
 export default async function handler(
 	req: NextApiRequest,
@@ -19,13 +19,12 @@ export default async function handler(
 	}
 
 	try {
-		const { data: userData, error } = await supabase
-			.from('auth_by_watchen_users')
-			.select('encrypted_private_key, iv, salt')
-			.eq('username_email', session.user.email || session.user.username)
-			.single();
+		const usersCollection = await getCollection('users');
+		const userData = await usersCollection.findOne({
+			username_email: session.user.email || session.user.username || '',
+		});
 
-		if (error || !userData) {
+		if (!userData) {
 			return res.status(404).json({ error: 'User data not found' });
 		}
 

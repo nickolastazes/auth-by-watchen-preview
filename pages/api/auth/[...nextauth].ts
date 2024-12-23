@@ -6,11 +6,7 @@ import TwitterProvider from 'next-auth/providers/twitter';
 import GoogleProvider from 'next-auth/providers/google';
 import DiscordProvider from 'next-auth/providers/discord';
 import { SiweMessage } from 'siwe';
-import { supabase } from '../../../utils/supabase';
-import {
-	generateEthereumAccount,
-	encryptPrivateKey,
-} from '../../../utils/generateEthereumAccount';
+
 import crypto from 'crypto';
 
 const scopes = ['identify', 'email'].join(' ');
@@ -164,24 +160,24 @@ export function getAuthOptions(req: IncomingMessage): NextAuthOptions {
 					session.user.provider = token.provider as string;
 					session.user.authToken = token.authToken as string;
 
-					// Fetch the user's Ethereum address
-					const { data: userData, error } = await supabase
-						.from('auth_by_watchen_users')
-						.select('address, encrypted_private_key, iv')
-						.eq(
-							'username_email',
-							session.user.email || session.user.username || session.user.name
-						)
-						.single();
+					try {
+						const username_email =
+							session.user.email || session.user.username || session.user.name;
+						const res = await fetch(
+							`${process.env.NEXTAUTH_URL}/api/user/check`,
+							{
+								method: 'POST',
+								headers: { 'Content-Type': 'application/json' },
+								body: JSON.stringify({ username_email }),
+							}
+						);
 
-					if (error) {
-						console.error('Error fetching user data:', error);
-					} else if (userData) {
-						session.user.ethereumAddress = userData.address;
-
-						if (userData && !error) {
-							session.user.ethereumAddress = userData.address;
+						const data = await res.json();
+						if (data.address) {
+							session.user.ethereumAddress = data.address;
 						}
+					} catch (error) {
+						console.error('Session user check error:', error);
 					}
 				}
 				return session;
@@ -190,62 +186,21 @@ export function getAuthOptions(req: IncomingMessage): NextAuthOptions {
 		events: {
 			async signIn({ user, account, profile }) {
 				try {
-					// Check if user already exists
-					const { data: existingUser } = await supabase
-						.from('auth_by_watchen_users')
-						.select('*')
-						.eq(
-							'username_email',
-							user.email ||
-								user.username ||
-								profile?.name ||
-								user.id ||
-								user.name
-						)
-						.single();
+					const username_email =
+						user.email || user.username || profile?.name || user.id || '';
 
-					if (!existingUser) {
-						let ethereumAddress = null;
-						let encryptedPrivateKey = null;
-						let iv = null;
-						let salt = null;
-
-						// For external wallet, use the user's address directly
-						if (account?.provider === 'external-wallet') {
-							ethereumAddress = user.id; // For external wallets, user.id is the Ethereum address
-						} else {
-							// Generate and encrypt Ethereum account for non-wallet providers
-							const ethereumAccount = generateEthereumAccount();
-							ethereumAddress = ethereumAccount.address;
-
-							// Encrypt the private key
-
-							const encryptionResult = encryptPrivateKey(
-								ethereumAccount.privateKey,
-								user.id
-							);
-							encryptedPrivateKey = encryptionResult.encryptedKey;
-							iv = encryptionResult.iv;
-							salt = encryptionResult.salt;
-						}
-
-						// Insert new user with Ethereum account details
-						const { error } = await supabase
-							.from('auth_by_watchen_users')
-							.insert({
-								provider: account?.provider,
-								username_email:
-									user.email || user.username || profile?.name || user.id,
-								address: ethereumAddress,
-								encrypted_private_key: encryptedPrivateKey,
-								iv: iv,
-								salt: salt,
-								export_account: false,
-							});
-
-						if (error) throw error;
-					}
-				} catch (error) {}
+					await fetch(`${process.env.NEXTAUTH_URL}/api/user/create`, {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({
+							username_email,
+							userId: user.id,
+							provider: account?.provider,
+						}),
+					});
+				} catch (error) {
+					console.error('SignIn error:', error);
+				}
 			},
 		},
 		secret: process.env.NEXTAUTH_SECRET!,

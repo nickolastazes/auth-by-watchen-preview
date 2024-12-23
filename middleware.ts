@@ -9,6 +9,11 @@ export async function middleware(request: NextRequest) {
 	});
 	const { pathname } = request.nextUrl;
 
+	// Allow auth-related endpoints to bypass authentication
+	if (pathname.startsWith('/api/user/')) {
+		return NextResponse.next();
+	}
+
 	// Special handling for NextAuth route
 	if (pathname.startsWith('/api/auth')) {
 		// Ensure HTTPS for NextAuth route in production
@@ -60,10 +65,5 @@ export async function middleware(request: NextRequest) {
 }
 
 export const config = {
-	matcher: [
-		// Protect API routes
-		'/api/:path*',
-		// All other routes except Next.js system files
-		'/((?!_next/static|_next/image|favicon.ico).*)',
-	],
+	matcher: ['/api/:path*', '/app/:path*', '/', '/sign-in'],
 };

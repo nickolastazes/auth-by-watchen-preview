@@ -7,7 +7,6 @@ import { toast } from 'sonner';
 import { useWallet } from '../../../hooks/useWallet';
 import { formatEther, parseEther } from 'viem';
 import { baseSepolia } from 'viem/chains';
-import { supabase } from '../../../utils/supabase';
 import QRCode from 'react-qr-code';
 import { Drawer } from 'vaul';
 import TransakOnRamp from '../TransakOnRamp';
@@ -331,10 +330,8 @@ export default function EmbeddedWalletAltUi() {
 			)
 		) {
 			try {
-				await supabase
-					.from('auth_by_watchen_users')
-					.delete()
-					.eq('username_email', session?.user.email || session?.user.username);
+				const response = await fetch('/api/user/manage', { method: 'DELETE' });
+				if (!response.ok) throw new Error('Failed to delete account');
 				localStorage.removeItem('last-used');
 				await handleSignOut();
 			} catch (error) {
@@ -384,11 +381,15 @@ export default function EmbeddedWalletAltUi() {
 	};
 
 	// COPY PRIVATE KEY TO CLIPBOARD
-	const copyKeyToClipboard = () => {
+	const copyKeyToClipboard = async () => {
 		if (!decryptedKey) return;
 		navigator.clipboard.writeText(decryptedKey).then(
-			() => {
+			async () => {
 				toast.success('Private key copied!');
+				const response = await fetch('/api/user/manage', {
+					method: 'PATCH',
+				});
+				if (!response.ok) throw new Error('Failed to update account');
 				setDecryptedKey(null);
 			},
 			() => toast.error('Failed to copy key')

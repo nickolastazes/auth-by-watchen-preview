@@ -1,4 +1,4 @@
-# Auth by Watchen (Preview)
+# Auth by Watchen (PREVIEW)
 
 Auth by Watchen is an opinionated Next.js boilerplate with built-in authentication that combines traditional social logins with embedded crypto wallets, designed to help founders build Web3 applications for mainstream users without vendor lock-in. The project is configured to work with Sepolia Base Network by default.
 
@@ -16,17 +16,16 @@ Auth by Watchen is an opinionated Next.js boilerplate with built-in authenticati
 - 📦 **Developer Experience**
   - Built on Next.js v15.0.2 (Pages Router)
   - Type-safe with TypeScript
-  - Supabase Integration for data persistence
+  - MongoDB Integration for data persistence
   - Responsive design out of the box
 - 🛠️ **Architecture**
-
   - Clean project structure
   - Production-ready configuration
   - Easy to customize and extend
 
 ## 🔮 Authentication Flow Diagram
 
-![Authentication Flow Diagram](https://watchen.xyz/diagram-auth-by-watchen-preview.png)
+![Authentication Flow Diagram](https://watchen.xyz/auth-by-watchen-diagram.png)
 
 ## 🚀 Quick Start
 
@@ -50,48 +49,26 @@ cp .env.local.example .env.local
 # Follow the configuration steps in .env.local
 ```
 
-4. Set up Supabase database:
+4. Set up MongoDB:
 
-```sql
--- Create the users table with required fields
-create table auth_by_watchen_users (
-  id uuid default uuid_generate_v4() primary key,
-  created_at timestamp with time zone default timezone('utc'::text, now()) not null,
-  provider text,
-  username_email text,
-  address text,
-  encrypted_private_key text,
-  iv text,
-  salt text,
-  export_account boolean default false
-);
-
--- Enable public access (security is handled at the application level)
-create policy "Enable all operations for users table"
-  on auth_by_watchen_users
-  for all
-  using (true)
-  with check (true);
-```
+You'll need to set up a MongoDB database and add the connection string to your environment variables. The application will automatically create the required collections with the following schema:
 
 ## 📚 Database Schema
 
-The boilerplate requires a Supabase database with the following table structure:
+The boilerplate uses MongoDB with the following collection structure:
 
-**Table: auth_by_watchen_users**
-| Column | Type | Description |
+**Collection: users**
+| Field | Type | Description |
 |--------|------|-------------|
-| id | uuid | Primary key, auto-generated |
-| created_at | timestamp | Auto-generated timestamp |
-| provider | text | Authentication provider (e.g., 'google', 'twitter') |
-| username_email | text | User's username or email |
-| address | text | Ethereum wallet address |
-| encrypted_private_key | text | Encrypted wallet private key |
-| iv | text | Initialization vector for encryption |
-| salt | text | Salt for encryption |
+| \_id | ObjectId | Primary key, auto-generated |
+| created_at | Date | Creation timestamp |
+| provider | string | Authentication provider (e.g., 'google', 'twitter') |
+| username_email | string | User's username or email |
+| address | string | Ethereum wallet address |
+| encrypted_private_key | string | Encrypted wallet private key |
+| iv | string | Initialization vector for encryption |
+| salt | string | Salt for encryption |
 | export_account | boolean | Flag for account export status |
-
-**Note:** Database security is handled at the application level rather than through Postgres RLS policies.
 
 5. Start development server:
 
@@ -103,39 +80,54 @@ yarn dev
 
 ```
 ├── components/            # Reusable React components
-│   ├── WatchenAuth/      # Authentication Components
+│   ├── Navbar.tsx        # Navigation component
+│   └── WatchenAuth/      # Authentication Components
 │       ├── AuroraBackground.tsx    # Background animation
 │       ├── FarcasterButton.tsx     # Farcaster login
 │       ├── MainLogin.tsx           # Main login component
 │       ├── TransakOffRamp.tsx      # Crypto selling
 │       ├── TransakOnRamp.tsx       # Crypto buying
 │       ├── Wallet.tsx              # Wallet management
-│       └── WalletAltUi/           # Wallet UI components
-│           ├── EmbeddedWalletAltUi.tsx
-│           └── ExternalWalletAltUi.tsx
-├── contracts/            # Smart contract development
-│   ├── src/             # Contract source files
-│   ├── test/            # Contract test files
-│   ├── scripts/         # Deployment scripts
-│   └── hardhat.config.ts # Hardhat configuration
-├── pages/                # Next.js pages
-│   ├── _app.tsx         # App configuration
-│   ├── _document.tsx    # Document setup
-│   ├── app.tsx          # Main app page
-│   ├── index.tsx        # Landing page
-│   ├── sign-in/         # Auth pages
-│   └── api/             # API endpoints
-│       └── auth/        # NextAuth configuration
-├── hooks/               # Custom hooks
-│   └── useWallet.ts    # Wallet management hook
-├── styles/             # Global styles
-│   └── globals.css     # Tailwind & custom styles
-├── types/              # TypeScript definitions
-│   └── next-auth.d.ts  # Auth type extensions
-├── utils/              # Helper functions
-│   ├── cn.ts          # Class name utilities
-│   └── supabase.ts    # Supabase client
-└── public/             # Static assets
+│       └── WalletUi/           # Wallet UI components
+│           ├── EmbeddedWalletUi.tsx
+│           └── ExternalWalletUi.tsx
+├── lib/                  # Core library code
+│   └── mongodb.ts       # MongoDB client configuration
+├── pages/               # Next.js pages
+│   ├── _app.tsx        # App configuration
+│   ├── _document.tsx   # Document setup
+│   ├── app.tsx         # Main app page
+│   ├── index.tsx       # Landing page
+│   ├── sign-in/        # Auth pages
+│   │   └── index.tsx   # Sign in page
+│   └── api/            # API endpoints
+│       ├── auth/       # NextAuth configuration
+│       │   └── [...nextauth].ts
+│       ├── decrypt-key.ts
+│       └── user/       # User management endpoints
+│           ├── check.ts
+│           ├── create.ts
+│           └── manage.ts
+├── hooks/              # Custom React hooks
+│   └── useWallet.ts   # Wallet management hook
+├── styles/            # Global styles
+│   └── globals.css   # Tailwind & custom styles
+├── types/            # TypeScript definitions
+│   ├── next-auth.d.ts # Auth type extensions
+│   └── database.ts   # Database type definitions
+├── utils/            # Helper functions
+│   ├── cn.ts        # Class name utilities
+│   ├── db.ts        # Database utilities
+│   └── embeddedWalletClient.ts # Wallet client configuration
+├── public/          # Static assets
+│   └── auth-by-watchen.svg
+├── middleware.ts    # Next.js middleware
+├── next.config.mjs  # Next.js configuration
+├── postcss.config.mjs # PostCSS configuration
+├── tailwind.config.ts # Tailwind configuration
+├── tsconfig.json   # TypeScript configuration
+├── package.json    # Project dependencies
+└── .env.local.example # Environment variables template
 ```
 
 ## 🌐 Network Configuration
@@ -181,8 +173,40 @@ To switch to a different network, modify the network configuration in your envir
 ## 🤝 Support, Bugs and Suggestions
 
 - Reach out:
+
   - Twitter: [@nickolas_tazes](https://x.com/nickolas_tazes)
   - Farcaster: [@tazes](https://warpcast.com/tazes)
+
+  ## 📋 Changelog
+
+### [0.0.2] - 2024-12-23
+
+#### Changed
+
+- Migrated from Supabase to MongoDB for improved flexibility and scalability
+- Updated database schema and related utilities
+- Enhanced error handling in API endpoints
+
+#### Added
+
+- MongoDB integration with connection pooling
+- New database utility functions in `utils/db.ts`
+- Improved type safety for database operations
+
+#### Fixed
+
+- Database timeout issues with long-running queries
+- Connection handling for concurrent requests
+- Type definitions for database models
+
+### [0.0.1] - 2024-11-16
+
+#### Added
+
+- Initial release with Supabase integration
+- Multi-platform authentication support
+- Web3 wallet integration
+- Basic user management features
 
 ## 📝 License
 
