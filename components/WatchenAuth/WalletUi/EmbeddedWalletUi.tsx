@@ -12,34 +12,7 @@ import TransakOnRamp from '../TransakOnRamp';
 import TransakOffRamp from '../TransakOffRamp';
 import { motion, AnimatePresence } from 'framer-motion';
 
-function Skeleton({
-	className,
-	...props
-}: React.HTMLAttributes<HTMLDivElement>) {
-	return (
-		<div
-			className={`animate-pulse rounded-md bg-white/20 ${className}`}
-			{...props}
-		/>
-	);
-}
-
-interface EmbeddedWalletUiProps {
-	isWalletLoading?: boolean;
-}
-
-export default function EmbeddedWalletAltUi({
-	isWalletLoading = false,
-}: EmbeddedWalletUiProps) {
-	if (isWalletLoading) {
-		return (
-			<div className='flex items-center space-x-2 border border-[#4B5563]/40 rounded-full sm:rounded-xl p-0.5 sm:py-1 sm:px-1.5 bg-white/10'>
-				<Skeleton className='h-[28px] w-[28px] rounded-full' />
-				<Skeleton className='hidden sm:block h-4 w-24' />
-			</div>
-		);
-	}
-
+export default function EmbeddedWalletAltUi() {
 	// ANIMATIONS
 	const menuVariants = {
 		hidden: {
@@ -432,15 +405,6 @@ export default function EmbeddedWalletAltUi({
 	useEffect(() => {
 		handleGetBalance();
 	}, [embeddedWallet]);
-
-	if (isLoading) {
-		return (
-			<div className='flex items-center space-x-2 border border-[#4B5563]/40 rounded-full sm:rounded-xl p-0.5 sm:py-1 sm:px-1.5 bg-white/10'>
-				<Skeleton className='h-[28px] w-[28px] rounded-full' />
-				<Skeleton className='hidden sm:block h-4 w-24' />
-			</div>
-		);
-	}
 
 	return (
 		<>
