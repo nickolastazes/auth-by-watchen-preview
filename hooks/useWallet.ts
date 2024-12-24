@@ -1,21 +1,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSession } from 'next-auth/react';
-import {
-	WalletClient,
-	Account,
-	createWalletClient,
-	createPublicClient,
-	http,
-} from 'viem';
-import { privateKeyToAccount } from 'viem/accounts';
+import { createPublicClient, http, type Hash } from 'viem';
 import { baseSepolia } from 'viem/chains';
 
-interface WalletTransaction {
-	client: WalletClient;
-	account: Account;
-}
-
-// Create public client once, outside the hook
 export const publicClient = createPublicClient({
 	chain: baseSepolia,
 	transport: http('https://sepolia.base.org'),
@@ -36,36 +23,39 @@ export function useWallet() {
 		}
 	}, [session]);
 
-	const createTransactionClient =
-		useCallback(async (): Promise<WalletTransaction> => {
+	const sendTransaction = useCallback(
+		async (to: string, value: string): Promise<Hash> => {
 			if (!session?.user?.id || session.user.provider === 'external-wallet') {
 				throw new Error('No session or external wallet user');
 			}
 
-			const response = await fetch('/api/decrypt-key', {
+			// Get one-time nonce
+			const nonceRes = await fetch('/api/get-transaction-nonce');
+			const { nonce } = await nonceRes.json();
+
+			const response = await fetch('/api/send-transaction/sign-transaction', {
 				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
+				headers: {
+					'Content-Type': 'application/json',
+					'x-transaction-nonce': nonce,
+				},
+				body: JSON.stringify({ to, value }),
 			});
 
 			if (!response.ok) {
-				throw new Error('Failed to fetch private key');
+				const error = await response.json();
+				throw new Error(error.error || 'Transaction failed');
 			}
 
-			const { privateKey } = await response.json();
-			const account = privateKeyToAccount(privateKey as `0x${string}`);
-
-			const client = createWalletClient({
-				account,
-				chain: baseSepolia,
-				transport: http('https://sepolia.base.org'),
-			});
-
-			return { client, account };
-		}, [session]);
+			const { hash } = await response.json();
+			return hash;
+		},
+		[session]
+	);
 
 	return {
 		publicClient,
 		embeddedWallet,
-		createTransactionClient,
+		sendTransaction,
 	};
 }

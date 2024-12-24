@@ -1,16 +1,16 @@
 import {
 	createWalletClient,
-	createPublicClient,
 	http,
-	PublicClient,
 	WalletClient,
 	Account,
+	Transport,
+	Chain,
 } from 'viem';
 import { privateKeyToAccount } from 'viem/accounts';
 import { baseSepolia } from 'viem/chains';
 import { Session } from 'next-auth';
 
-const transport = http('https://sepolia.base.org');
+const transport = http('https://sepolia.base.org') as Transport;
 
 export async function getEmbeddedWalletClient(
 	session: Session | null
@@ -20,7 +20,7 @@ export async function getEmbeddedWalletClient(
 	}
 
 	try {
-		const response = await fetch('/api/decrypt-key', {
+		const response = await fetch('/api/send-transaction/decrypt-key', {
 			method: 'POST',
 			headers: {
 				'Content-Type': 'application/json',
@@ -40,7 +40,7 @@ export async function getEmbeddedWalletClient(
 		const client = createWalletClient({
 			account,
 			chain: baseSepolia,
-			transport,
+			transport: transport as Transport<'http', Chain>,
 		});
 
 		return { client, account };
@@ -52,13 +52,6 @@ export async function getEmbeddedWalletClient(
 			}`
 		);
 	}
-}
-
-export function getPublicClient(): PublicClient {
-	return createPublicClient({
-		chain: baseSepolia,
-		transport,
-	}) as PublicClient;
 }
 
 export async function getUserAddress(

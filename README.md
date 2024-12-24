@@ -179,6 +179,26 @@ To switch to a different network, modify the network configuration in your envir
 
   ## 📋 Changelog
 
+### [0.0.3] - 2024-12-30
+
+#### Enhanced
+
+- Implemented Suspense loading state for Wallet component with new WalletSkeleton
+- Improved transaction handling in TransakOffRamp component
+- Updated EmbeddedWalletUi to support loading states and smoother transitions
+
+#### Changed
+
+- Removed deprecated decrypt-key API endpoint
+- Streamlined transaction signing process for better reliability
+- Consolidated wallet loading states across components
+
+#### Fixed
+
+- Transaction handling edge cases in TransakOffRamp
+- Loading state inconsistencies in wallet UI components
+- Improved error handling during transaction signing
+
 ### [0.0.2] - 2024-12-23
 
 #### Changed

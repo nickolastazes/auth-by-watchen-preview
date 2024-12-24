@@ -1,9 +1,8 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { TransakConfig, Transak } from '@transak/transak-sdk';
 import { useWallet } from '../../hooks/useWallet';
-import { formatEther, parseEther } from 'viem';
+import { formatEther } from 'viem';
 import { toast } from 'sonner';
-import { baseSepolia } from 'viem/chains';
 
 const TRANSAK_API_KEY = process.env.NEXT_PUBLIC_TRANSAK_API_KEY as string;
 
@@ -17,7 +16,7 @@ function TransakOffRamp() {
 	const [amount, setAmount] = useState<number | null>(null);
 	const [isTransacting, setIsTransacting] = useState(false);
 
-	const { embeddedWallet, publicClient, createTransactionClient } = useWallet();
+	const { embeddedWallet, publicClient, sendTransaction } = useWallet();
 
 	const initialAmountState = {
 		amount: '',
@@ -48,29 +47,36 @@ function TransakOffRamp() {
 		setHasSetAmount(true);
 	};
 
-	const handleTransaction = async () => {
-		if (!embeddedWallet || !destinationAddress || !amount) {
+	const handleTransaction = async (to: string, amount: string) => {
+		if (!to || !amount) {
 			toast.error('Missing transaction details');
 			return;
 		}
 
 		setIsTransacting(true);
 		try {
-			const { client, account } = await createTransactionClient();
-			const amountInWei = parseEther(amount.toString());
-			const hash = await client.sendTransaction({
-				to: destinationAddress as `0x${string}`,
-				value: amountInWei,
-				account: account,
-				chain: baseSepolia,
+			const response = await fetch('/api/send-transaction/sign-transaction', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					to,
+					value: amount,
+				}),
 			});
 
+			if (!response.ok) {
+				const errorData = await response.json();
+				throw new Error(errorData.error || 'Transaction failed');
+			}
+
+			const { hash } = await response.json();
 			await publicClient.waitForTransactionReceipt({ hash });
 			toast.success('Transaction sent successfully');
-			setOrderSuccess(true);
 		} catch (error) {
-			toast.error('Transaction failed');
-			console.error(error);
+			console.error('Transaction failed:', error);
+			toast.error(
+				error instanceof Error ? error.message : 'Transaction failed'
+			);
 		} finally {
 			setIsTransacting(false);
 		}
@@ -241,7 +247,9 @@ function TransakOffRamp() {
 						<span className='font-semibold'>{amount} ETH</span>
 					</p>
 					<button
-						onClick={handleTransaction}
+						onClick={() =>
+							handleTransaction(destinationAddress!, amount!.toString())
+						}
 						disabled={isTransacting}
 						className='primarybtn flex mx-auto w-[300px] mt-2'>
 						{isTransacting ? 'Finalizing...' : 'Finalize withdrawal'}

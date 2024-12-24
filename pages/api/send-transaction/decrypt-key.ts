@@ -1,8 +1,8 @@
 import type { NextApiRequest, NextApiResponse } from 'next';
-import { decryptPrivateKey } from '../../utils/generateEthereumAccount';
+import { decryptPrivateKey } from '../../../utils/generateEthereumAccount';
 import { getServerSession } from 'next-auth/next';
-import { getAuthOptions } from './auth/[...nextauth]';
-import { getCollection } from '../../utils/db';
+import { getAuthOptions } from '../auth/[...nextauth]';
+import { getCollection } from '../../../utils/db';
 
 export default async function handler(
 	req: NextApiRequest,

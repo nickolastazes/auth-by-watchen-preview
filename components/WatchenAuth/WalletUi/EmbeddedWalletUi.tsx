@@ -5,15 +5,41 @@ import { useSession, signOut } from 'next-auth/react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { toast } from 'sonner';
 import { useWallet } from '../../../hooks/useWallet';
-import { formatEther, parseEther } from 'viem';
-import { baseSepolia } from 'viem/chains';
+import { formatEther } from 'viem';
 import QRCode from 'react-qr-code';
 import { Drawer } from 'vaul';
 import TransakOnRamp from '../TransakOnRamp';
 import TransakOffRamp from '../TransakOffRamp';
 import { motion, AnimatePresence } from 'framer-motion';
 
-export default function EmbeddedWalletUi() {
+function Skeleton({
+	className,
+	...props
+}: React.HTMLAttributes<HTMLDivElement>) {
+	return (
+		<div
+			className={`animate-pulse rounded-md bg-white/20 ${className}`}
+			{...props}
+		/>
+	);
+}
+
+interface EmbeddedWalletUiProps {
+	isWalletLoading?: boolean;
+}
+
+export default function EmbeddedWalletAltUi({
+	isWalletLoading = false,
+}: EmbeddedWalletUiProps) {
+	if (isWalletLoading) {
+		return (
+			<div className='flex items-center space-x-2 border border-[#4B5563]/40 rounded-full sm:rounded-xl p-0.5 sm:py-1 sm:px-1.5 bg-white/10'>
+				<Skeleton className='h-[28px] w-[28px] rounded-full' />
+				<Skeleton className='hidden sm:block h-4 w-24' />
+			</div>
+		);
+	}
+
 	// ANIMATIONS
 	const menuVariants = {
 		hidden: {
@@ -104,7 +130,7 @@ export default function EmbeddedWalletUi() {
 	};
 
 	const { data: session, status } = useSession();
-	const { embeddedWallet, createTransactionClient, publicClient } = useWallet();
+	const { embeddedWallet, publicClient } = useWallet();
 	const [balance, setBalance] = useState<any | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isLoadingBalance, setIsLoadingBalance] = useState(false);
@@ -280,14 +306,20 @@ export default function EmbeddedWalletUi() {
 			return;
 		}
 		try {
-			const { client, account } = await createTransactionClient();
-			const amountInWei = parseEther(amountData.amount);
-			const hash = await client.sendTransaction({
-				to: addressData.address as `0x${string}`,
-				value: amountInWei,
-				account: account,
-				chain: baseSepolia,
+			const response = await fetch('/api/send-transaction/sign-transaction', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({
+					to: addressData.address,
+					value: amountData.amount,
+				}),
 			});
+
+			if (!response.ok) {
+				throw new Error('Transaction failed');
+			}
+
+			const { hash } = await response.json();
 			setHash(hash);
 			await publicClient.waitForTransactionReceipt({ hash });
 			toast.success('Successful withdrawal!');
@@ -357,7 +389,7 @@ export default function EmbeddedWalletUi() {
 		}
 		setIsDecrypting(true);
 		try {
-			const response = await fetch('/api/decrypt-key', {
+			const response = await fetch('/api/send-transaction/decrypt-key', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
@@ -400,6 +432,15 @@ export default function EmbeddedWalletUi() {
 	useEffect(() => {
 		handleGetBalance();
 	}, [embeddedWallet]);
+
+	if (isLoading) {
+		return (
+			<div className='flex items-center space-x-2 border border-[#4B5563]/40 rounded-full sm:rounded-xl p-0.5 sm:py-1 sm:px-1.5 bg-white/10'>
+				<Skeleton className='h-[28px] w-[28px] rounded-full' />
+				<Skeleton className='hidden sm:block h-4 w-24' />
+			</div>
+		);
+	}
 
 	return (
 		<>
@@ -1041,7 +1082,7 @@ export default function EmbeddedWalletUi() {
 																		</div>
 																	</div>
 																	<div className='text-[12px] text-neutral-300 ml-5 min-w-[250px]'>
-																		Withdraw to
+																		To
 																		<div className='flex flex-col'>
 																			<input
 																				className='font-medium text-neutral-100 bg-transparent inline-flex py-1 w-full flex-1 items-center justify-center text-[14px] leading-none shadow-[0_0_0_0px] outline-none focus:shadow-[0_0_0_0px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
