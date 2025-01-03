@@ -84,7 +84,7 @@ yarn dev
 │   └── WatchenAuth/      # Authentication Components
 │       ├── AuroraBackground.tsx    # Background animation
 │       ├── FarcasterButton.tsx     # Farcaster login
-        ├── TelegramButton.tsx      # Telegram login
+│       ├── TelegramButton.tsx      # Telegram login
 │       ├── MainLogin.tsx           # Main login component
 │       ├── TransakOffRamp.tsx      # Crypto selling
 │       ├── TransakOnRamp.tsx       # Crypto buying
