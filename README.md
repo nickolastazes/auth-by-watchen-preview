@@ -84,13 +84,15 @@ yarn dev
 │   └── WatchenAuth/      # Authentication Components
 │       ├── AuroraBackground.tsx    # Background animation
 │       ├── FarcasterButton.tsx     # Farcaster login
+        ├── TelegramButton.tsx      # Telegram login
 │       ├── MainLogin.tsx           # Main login component
 │       ├── TransakOffRamp.tsx      # Crypto selling
 │       ├── TransakOnRamp.tsx       # Crypto buying
 │       ├── Wallet.tsx              # Wallet management
-│       └── WalletUi/           # Wallet UI components
+│       └── WalletUi/              # Wallet UI components
 │           ├── EmbeddedWalletUi.tsx
-│           └── ExternalWalletUi.tsx
+│           ├── ExternalWalletUi.tsx
+│           └── WalletSkeleton.tsx
 ├── lib/                  # Core library code
 │   └── mongodb.ts       # MongoDB client configuration
 ├── pages/               # Next.js pages
@@ -103,7 +105,8 @@ yarn dev
 │   └── api/            # API endpoints
 │       ├── auth/       # NextAuth configuration
 │       │   └── [...nextauth].ts
-│       ├── decrypt-key.ts
+│       ├── proxy/      # Proxy endpoints
+│       │   └── telegram-image.ts
 │       └── user/       # User management endpoints
 │           ├── check.ts
 │           ├── create.ts
@@ -179,7 +182,7 @@ To switch to a different network, modify the network configuration in your envir
 
   ## 📋 Changelog
 
-  ### [0.0.4] - 2024-01-03
+### [0.0.4] - 2024-01-03
 
 #### Added
 
@@ -198,10 +201,6 @@ To switch to a different network, modify the network configuration in your envir
 - Removed deprecated console error logs
 - Enhanced error handling in authentication flow
 - Improved loading state consistency across components
-
-## 📝 License
-
-This preview release is available for testing purposes. Full license terms will be announced with the official release.
 
 ### [0.0.3] - 2024-12-30
 
@@ -251,3 +250,7 @@ This preview release is available for testing purposes. Full license terms will 
 - Multi-platform authentication support
 - Web3 wallet integration
 - Basic user management features
+
+## 📝 License
+
+This preview release is available for testing purposes. Full license terms will be announced with the official release.
