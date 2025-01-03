@@ -149,7 +149,7 @@ export default function EmbeddedWalletAltUi() {
 					alt={`${session.user.name}'s avatar`}
 					className='w-full h-full rounded-full object-cover'
 					onError={(e) => {
-						console.error('Image load failed:', e);
+						toast.error('Failed to load image');
 					}}
 					referrerPolicy='no-referrer'
 					crossOrigin='anonymous'
@@ -172,7 +172,7 @@ export default function EmbeddedWalletAltUi() {
 					alt={`${session.user.name}'s avatar`}
 					className='w-full h-full rounded-full object-cover'
 					onError={(e) => {
-						console.error('Image load failed:', e);
+						toast.error('Failed to load image');
 					}}
 					referrerPolicy='no-referrer'
 					crossOrigin='anonymous'
@@ -216,7 +216,6 @@ export default function EmbeddedWalletAltUi() {
 			const balanceInEther = parseFloat(formatEther(result)).toFixed(4);
 			setBalance(balanceInEther);
 		} catch (error) {
-			console.error('Error fetching balance:', error);
 			toast.error('Error fetching your balance');
 			setBalance(null);
 		}
@@ -298,7 +297,6 @@ export default function EmbeddedWalletAltUi() {
 			toast.success('Successful withdrawal!');
 		} catch (error) {
 			toast.error('Transaction failed. Please check your input and try again.');
-			console.error(error);
 		} finally {
 			setIsLoading(false);
 		}
@@ -321,7 +319,7 @@ export default function EmbeddedWalletAltUi() {
 			await signOut({ redirect: false });
 			router.push('/');
 		} catch (error) {
-			console.error('Error during sign out:', error);
+			toast.error('Something went wrong with logging out');
 		} finally {
 			setIsLoading(false);
 		}
@@ -340,7 +338,6 @@ export default function EmbeddedWalletAltUi() {
 				localStorage.removeItem('last-used');
 				await handleSignOut();
 			} catch (error) {
-				console.error('Error deleting account:', error);
 				toast.error('An error occurred while deleting the account');
 			}
 		}
@@ -379,7 +376,6 @@ export default function EmbeddedWalletAltUi() {
 			setDecryptedKey(privateKey);
 		} catch (error) {
 			toast.error('Failed to decrypt private key');
-			console.error(error);
 		} finally {
 			setIsDecrypting(false);
 		}
@@ -610,6 +606,25 @@ export default function EmbeddedWalletAltUi() {
 															}`}
 														disabled={!isTermsAccepted || isDecrypting}
 														onClick={handleDecryptPrivateKey}>
+														{isDecrypting && (
+															<svg
+																className='animate-spin h-4 w-4 text-neutral-100 mr-2'
+																xmlns='http://www.w3.org/2000/svg'
+																fill='none'
+																viewBox='0 0 24 24'>
+																<circle
+																	className='opacity-25'
+																	cx='12'
+																	cy='12'
+																	r='10'
+																	stroke='currentColor'
+																	strokeWidth='4'></circle>
+																<path
+																	className='opacity-75'
+																	fill='currentColor'
+																	d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'></path>
+															</svg>
+														)}
 														{isDecrypting
 															? 'Decrypting...'
 															: !isTermsAccepted

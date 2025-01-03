@@ -1,6 +1,7 @@
-'use client';
 import { cn } from '../../utils/cn';
 import React, { ReactNode } from 'react';
+
+// https://ui.aceternity.com/components/aurora-background
 
 interface AuroraBackgroundProps extends React.HTMLProps<HTMLDivElement> {
 	children: ReactNode;
@@ -17,7 +18,7 @@ export const AuroraBackground = ({
 		<main className='relative'>
 			<div className='absolute inset-0 overflow-hidden -z-50'>
 				<div
-					//   I'm sorry but this is what peak developer performance looks like // trigger warning
+					//   I'm sorry but this is what peak developer performance looks like trigger warning
 					className={cn(
 						`
 						[--white-gradient:repeating-linear-gradient(100deg,var(--white)_0%,var(--white)_7%,var(--transparent)_10%,var(--transparent)_12%,var(--white)_16%)]

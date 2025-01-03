@@ -73,7 +73,6 @@ function TransakOffRamp() {
 			await publicClient.waitForTransactionReceipt({ hash });
 			toast.success('Transaction sent successfully');
 		} catch (error) {
-			console.error('Transaction failed:', error);
 			toast.error(
 				error instanceof Error ? error.message : 'Transaction failed'
 			);
@@ -133,10 +132,6 @@ function TransakOffRamp() {
 
 			const handleOrderCreated = (data: any) => {
 				newTransak.close();
-				console.log(
-					'Order created',
-					data.status.cryptoPaymentData.paymentAddress
-				);
 				setDestinationAddress(data.status.cryptoPaymentData.paymentAddress);
 				setAmount(Number(data.status.cryptoAmount));
 			};

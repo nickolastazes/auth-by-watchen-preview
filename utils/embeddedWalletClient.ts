@@ -45,7 +45,6 @@ export async function getEmbeddedWalletClient(
 
 		return { client, account };
 	} catch (error) {
-		console.error('Error creating embedded wallet client:', error);
 		throw new Error(
 			`Failed to create embedded wallet client: ${
 				error instanceof Error ? error.message : 'Unknown error'

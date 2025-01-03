@@ -1,43 +1,74 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { getServerSession } from 'next-auth/next';
-import { getAuthOptions } from '../auth/[...nextauth]';
+import { NextApiRequest, NextApiResponse } from 'next';
 import { getCollection } from '../../../utils/db';
+import {
+	generateEthereumAccount,
+	encryptPrivateKey,
+} from '../../../utils/generateEthereumAccount';
+
+export const config = {
+	maxDuration: 10,
+};
 
 export default async function handler(
 	req: NextApiRequest,
 	res: NextApiResponse
 ) {
-	const session = await getServerSession(req, res, getAuthOptions(req));
-
-	if (!session?.user) {
-		return res.status(401).json({ error: 'Unauthorized' });
+	if (req.method !== 'POST') {
+		return res.status(405).json({ error: 'Method not allowed' });
 	}
 
-	const { method } = req;
+	const { username_email, userId, provider } = req.body;
+
+	if (!username_email || !userId || !provider) {
+		return res.status(400).json({ error: 'Missing required fields' });
+	}
 
 	try {
 		const usersCollection = await getCollection('users');
+		const query = { username_email, provider };
 
-		switch (method) {
-			case 'DELETE':
-				await usersCollection.deleteOne({
-					username_email: session.user.email || session.user.username || '',
-				});
-				return res.status(200).json({ message: 'Account deleted' });
+		const existingUser = await usersCollection.findOne(query);
 
-			case 'PATCH':
-				await usersCollection.updateOne(
-					{ username_email: session.user.email || session.user.username || '' },
-					{ $set: { export_account: true } }
-				);
-				return res.status(200).json({ message: 'Account updated' });
+		if (!existingUser) {
+			const ethereumAccount = generateEthereumAccount();
+			const encryptionResult = encryptPrivateKey(
+				ethereumAccount.privateKey,
+				userId
+			);
 
-			default:
-				res.setHeader('Allow', ['DELETE', 'PATCH']);
-				return res.status(405).json({ error: `Method ${method} Not Allowed` });
+			await Promise.race([
+				(usersCollection as any).updateOne(
+					query,
+					{
+						$setOnInsert: {
+							provider,
+							username_email,
+							address: ethereumAccount.address,
+							encrypted_private_key: encryptionResult.encryptedKey,
+							iv: encryptionResult.iv,
+							salt: encryptionResult.salt,
+							export_account: false,
+							created_at: new Date(),
+						},
+					},
+					{ upsert: true }
+				),
+				new Promise((_, reject) =>
+					setTimeout(() => reject(new Error('DB operation timeout')), 5000)
+				),
+			]);
 		}
+
+		const finalUser = await usersCollection.findOne(query);
+
+		return res.status(200).json({
+			success: true,
+			address: finalUser?.address,
+		});
 	} catch (error) {
-		console.error('API error:', error);
-		return res.status(500).json({ error: 'Internal server error' });
+		return res.status(500).json({
+			error: 'Database error',
+			details: error instanceof Error ? error.message : 'Unknown error',
+		});
 	}
 }

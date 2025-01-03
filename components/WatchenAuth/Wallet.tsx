@@ -15,7 +15,10 @@ function Wallet() {
 	}
 
 	return (
-		<section>
+		<div
+			className='relative'
+			tabIndex={-1}
+			{...(status !== 'authenticated' ? { 'data-inert': '' } : {})}>
 			<Toaster position='bottom-right' richColors />
 			{session && status === 'authenticated' && !externalAddress && (
 				<EmbeddedWalletAltUi />
@@ -23,7 +26,7 @@ function Wallet() {
 			{session && status === 'authenticated' && externalAddress && (
 				<ExternalWalletAltUi />
 			)}
-		</section>
+		</div>
 	);
 }
 

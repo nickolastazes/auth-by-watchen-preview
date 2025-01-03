@@ -179,6 +179,30 @@ To switch to a different network, modify the network configuration in your envir
 
   ## 📋 Changelog
 
+  ### [0.0.4] - 2024-01-03
+
+#### Added
+
+- Telegram provider integration in MainLogin component
+- Enhanced loading state management in FarcasterButton
+- Improved error handling across authentication components
+
+#### Changed
+
+- Streamlined Wallet component structure for better maintainability
+- Refactored user management API endpoints for improved efficiency
+- Updated MainLogin component with expanded social provider options
+
+#### Fixed
+
+- Removed deprecated console error logs
+- Enhanced error handling in authentication flow
+- Improved loading state consistency across components
+
+## 📝 License
+
+This preview release is available for testing purposes. Full license terms will be announced with the official release.
+
 ### [0.0.3] - 2024-12-30
 
 #### Enhanced
@@ -227,7 +251,3 @@ To switch to a different network, modify the network configuration in your envir
 - Multi-platform authentication support
 - Web3 wallet integration
 - Basic user management features
-
-## 📝 License
-
-This preview release is available for testing purposes. Full license terms will be announced with the official release.

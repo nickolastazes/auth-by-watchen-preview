@@ -36,7 +36,7 @@ export default async function handler(
 		// Get user data from MongoDB
 		const usersCollection = await getCollection('users');
 		const userData = await usersCollection.findOne({
-			username_email: session.user.email || session.user.username || '',
+			username_email: session.user.email || session.user.username,
 		});
 
 		if (!userData) {
@@ -74,7 +74,6 @@ export default async function handler(
 
 		res.status(200).json({ hash });
 	} catch (error) {
-		console.error('Error processing transaction:', error);
 		res.status(500).json({
 			error: 'Failed to process transaction',
 			details: error instanceof Error ? error.message : 'Unknown error',

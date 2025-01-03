@@ -9,7 +9,7 @@ import { baseSepolia } from 'viem/chains';
 import { Drawer } from 'vaul';
 import { motion } from 'framer-motion';
 
-export default function ExternalWalletUi() {
+export default function ExternalWalletAltUi() {
 	// ANIMATIONS
 	const containerVariants = {
 		hidden: { opacity: 0 },
@@ -85,7 +85,6 @@ export default function ExternalWalletUi() {
 			const balanceInEther = parseFloat(formatEther(result)).toFixed(4);
 			setBalance(balanceInEther);
 		} catch (error) {
-			console.error('Error fetching balance:', error);
 			toast.error('Error fetching your balance');
 			setBalance(null);
 		}
@@ -111,7 +110,7 @@ export default function ExternalWalletUi() {
 			await signOut({ redirect: false });
 			router.push('/');
 		} catch (error) {
-			console.error('Error during sign out:', error);
+			toast.error('Something went wrong with logging you out');
 		} finally {
 			setIsSignOutLoading(false);
 		}
@@ -167,7 +166,7 @@ export default function ExternalWalletUi() {
 											alt={`External wallet's avatar`}
 											className='w-full h-full rounded-full object-cover'
 											onError={(e) => {
-												console.error('Image load failed:', e);
+												toast.error('Failed to load image');
 											}}
 											referrerPolicy='no-referrer'
 											crossOrigin='anonymous'

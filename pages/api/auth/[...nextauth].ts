@@ -15,6 +15,12 @@ function generateAuthToken(): string {
 	return crypto.randomBytes(32).toString('hex');
 }
 
+function transformPhotoUrl(photoUrl: string | undefined) {
+	if (!photoUrl) return null;
+	const encodedUrl = encodeURIComponent(photoUrl);
+	return `/api/proxy/telegram-image?url=${encodedUrl}`;
+}
+
 export function getAuthOptions(req: IncomingMessage): NextAuthOptions {
 	const providers = [
 		CredentialsProvider({
@@ -136,6 +142,37 @@ export function getAuthOptions(req: IncomingMessage): NextAuthOptions {
 				};
 			},
 		}),
+		CredentialsProvider({
+			id: 'telegram',
+			name: 'Telegram',
+			credentials: {
+				id: { type: 'text' },
+				first_name: { type: 'text' },
+				last_name: { type: 'text' },
+				username: { type: 'text' },
+				photo_url: { type: 'text' },
+				auth_date: { type: 'text' },
+				hash: { type: 'text' },
+			},
+			async authorize(credentials) {
+				if (!credentials) return null;
+
+				try {
+					const fullName = [credentials.first_name, credentials.last_name]
+						.filter(Boolean)
+						.join(' ');
+
+					return {
+						id: credentials.id,
+						name: fullName,
+						username: credentials.username,
+						image: transformPhotoUrl(credentials.photo_url),
+					};
+				} catch (error) {
+					return null;
+				}
+			},
+		}),
 	];
 
 	return {
@@ -168,7 +205,10 @@ export function getAuthOptions(req: IncomingMessage): NextAuthOptions {
 							{
 								method: 'POST',
 								headers: { 'Content-Type': 'application/json' },
-								body: JSON.stringify({ username_email }),
+								body: JSON.stringify({
+									username_email,
+									provider: session.user.provider,
+								}),
 							}
 						);
 
@@ -177,7 +217,12 @@ export function getAuthOptions(req: IncomingMessage): NextAuthOptions {
 							session.user.ethereumAddress = data.address;
 						}
 					} catch (error) {
-						console.error('Session user check error:', error);
+						session.user.ethereumAddress = undefined;
+						return {
+							...session,
+							error:
+								'Failed to load wallet address. Please try signing in again.',
+						};
 					}
 				}
 				return session;
@@ -187,19 +232,24 @@ export function getAuthOptions(req: IncomingMessage): NextAuthOptions {
 			async signIn({ user, account, profile }) {
 				try {
 					const username_email =
-						user.email || user.username || profile?.name || user.id || '';
+						user.email || user.username || profile?.name || user.id;
 
-					await fetch(`${process.env.NEXTAUTH_URL}/api/user/create`, {
-						method: 'POST',
-						headers: { 'Content-Type': 'application/json' },
-						body: JSON.stringify({
-							username_email,
-							userId: user.id,
-							provider: account?.provider,
-						}),
-					});
+					const res = await fetch(
+						`${process.env.NEXTAUTH_URL}/api/user/create`,
+						{
+							method: 'POST',
+							headers: { 'Content-Type': 'application/json' },
+							body: JSON.stringify({
+								username_email,
+								userId: user.id,
+								provider: account?.provider,
+							}),
+						}
+					);
+
+					const data = await res.json();
 				} catch (error) {
-					console.error('SignIn error:', error);
+					throw new Error('Failed to create user account. Please try again.');
 				}
 			},
 		},

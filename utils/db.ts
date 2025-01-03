@@ -20,7 +20,6 @@ export async function connectToDatabase() {
 		cachedDb = db;
 		return { client, db };
 	} catch (error) {
-		console.error('Detailed MongoDB error:', JSON.stringify(error, null, 2));
 		throw error;
 	}
 }

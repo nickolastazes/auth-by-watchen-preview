@@ -29,15 +29,10 @@ export function useWallet() {
 				throw new Error('No session or external wallet user');
 			}
 
-			// Get one-time nonce
-			const nonceRes = await fetch('/api/get-transaction-nonce');
-			const { nonce } = await nonceRes.json();
-
 			const response = await fetch('/api/send-transaction/sign-transaction', {
 				method: 'POST',
 				headers: {
 					'Content-Type': 'application/json',
-					'x-transaction-nonce': nonce,
 				},
 				body: JSON.stringify({ to, value }),
 			});

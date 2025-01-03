@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 import { useSignIn, StatusAPIResponse, QRCode } from '@farcaster/auth-kit';
 import { AuthClientError } from '@farcaster/auth-client';
-import { useRouter } from 'next/router';
 import { signIn as nextAuthSignIn } from 'next-auth/react';
 
 interface FarcasterButtonProps {
@@ -24,11 +23,14 @@ const FarcasterButton = ({
 	interval = 1500,
 }: FarcasterButtonProps) => {
 	const [isQRModalOpen, setIsQRModalOpen] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 
 	const onSuccessCallback = useCallback(
 		async (res: StatusAPIResponse) => {
 			try {
 				setIsQRModalOpen(false);
+				setIsLoading(true);
+				localStorage.setItem('recent-provider', 'farcaster');
 
 				const result = await nextAuthSignIn('farcaster', {
 					message: res.message,
@@ -40,7 +42,7 @@ const FarcasterButton = ({
 				});
 
 				if (!result || result.error) {
-					console.error('Sign in error:', result?.error);
+					setIsLoading(false);
 					return;
 				}
 
@@ -48,7 +50,7 @@ const FarcasterButton = ({
 
 				window.location.href = '/app';
 			} catch (error) {
-				console.error('Farcaster sign in error:', error);
+				setIsLoading(false);
 				onError?.(error as AuthClientError);
 			}
 		},
@@ -96,29 +98,55 @@ const FarcasterButton = ({
 			<div className='flex flex-col items-center'>
 				<button
 					onClick={handleSignIn}
-					disabled={!url}
-					className='w-full focus-within:z-10 font-medium bg-gradient-to-b from-[#ffffff] via-[#ffffff] to-[#f8f8f8] border border-[#4B5563]/30 shadow-sm items-center rounded-xl focus:ring-1 focus:ring-inset focus:ring-blue-400 flex py-2.5 px-3'>
-					<img
-						src='/signinlogos/farcaster.svg'
-						alt='Farcaster logo'
-						className='w-6 h-6'
-					/>
+					disabled={!url || isLoading}
+					className={`w-full focus-within:z-10 font-medium bg-gradient-to-b from-[#ffffff] via-[#fdfdfd] to-[#f3f3f3] border border-[#4B5563]/25 shadow-sm items-center rounded-xl focus:ring-1 focus:ring-inset focus:ring-blue-400 flex py-2.5 px-3 ${
+						isLoading ? 'opacity-75 cursor-not-allowed' : ''
+					}`}>
+					{isLoading ? (
+						<svg
+							className='animate-spin h-5 w-5 text-neutral-900'
+							xmlns='http://www.w3.org/2000/svg'
+							fill='none'
+							viewBox='0 0 24 24'>
+							<circle
+								className='opacity-25'
+								cx='12'
+								cy='12'
+								r='10'
+								stroke='currentColor'
+								strokeWidth='4'></circle>
+							<path
+								className='opacity-75'
+								fill='currentColor'
+								d='M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z'></path>
+						</svg>
+					) : (
+						<img
+							src='/signinlogos/farcaster.svg'
+							alt='Farcaster logo'
+							className='w-6 h-6'
+						/>
+					)}
 					<span className='text-neutral-900 text-sm pl-2.5'>
-						{!url ? 'Initializing...' : 'Farcaster'}
+						{!url
+							? 'Initializing...'
+							: isLoading
+							? 'Signing in with Farcaster...'
+							: 'Farcaster'}
 					</span>
 				</button>
 
 				{url && isQRModalOpen && (
 					<>
 						<div
-							className='fixed inset-0 bg-black/40 backdrop-blur-sm z-40'
+							className='fixed inset-0 bg-black/40 backdrop-blur-sm z-50'
 							style={{
 								WebkitBackdropFilter: 'blur(4px)',
 							}}
 							onClick={() => setIsQRModalOpen(false)}
 						/>
-						<div className='fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[25vh] max-w-[450px] z-50 rounded-xl bg-[#1a1a1a] border border-[#4B5563]/40 p-5 shadow-lg focus:outline-none'>
-							<div className='flex justify-between items-center mb-4'>
+						<div className='fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[300px] z-50 rounded-xl bg-[#1a1a1a] border border-[#4B5563]/40 p-5 shadow-lg focus:outline-none'>
+							<div className='flex justify-between items-center mb-6'>
 								<h3 className='text-neutral-100 text-lg font-semibold tracking-tight'>
 									Scan QR Code
 								</h3>
@@ -151,7 +179,7 @@ const FarcasterButton = ({
 								target='_blank'
 								rel='noopener noreferrer'
 								className='w-full'>
-								<div className='flex justify-center items-center gap-2 mt-4'>
+								<div className='flex justify-center items-center gap-2 mt-6'>
 									<svg
 										xmlns='http://www.w3.org/2000/svg'
 										width='16'

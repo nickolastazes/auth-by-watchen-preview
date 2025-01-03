@@ -6,7 +6,7 @@ import {
 } from '../../../utils/generateEthereumAccount';
 
 export const config = {
-	maxDuration: 10, // Set max duration to 10 seconds
+	maxDuration: 10,
 };
 
 export default async function handler(
@@ -19,32 +19,34 @@ export default async function handler(
 
 	const { username_email, userId, provider } = req.body;
 
-	if (!username_email || !userId) {
+	if (!username_email || !userId || !provider) {
 		return res.status(400).json({ error: 'Missing required fields' });
 	}
 
 	try {
-		const DB_TIMEOUT = 8000;
+		const usersCollection = await getCollection('users');
+		const query = { username_email, provider };
 
-		const usersCollection = await Promise.race([
-			getCollection('users'),
-			new Promise((_, reject) =>
-				setTimeout(() => reject(new Error('DB connection timeout')), DB_TIMEOUT)
-			),
-		]);
+		const existingUser = await usersCollection.findOne(query);
 
-		if (provider === 'external-wallet') {
+		if (!existingUser) {
+			const ethereumAccount = generateEthereumAccount();
+			const encryptionResult = encryptPrivateKey(
+				ethereumAccount.privateKey,
+				userId
+			);
+
 			await Promise.race([
 				(usersCollection as any).updateOne(
-					{ username_email },
+					query,
 					{
 						$setOnInsert: {
 							provider,
 							username_email,
-							address: userId,
-							encrypted_private_key: '',
-							iv: '',
-							salt: '',
+							address: ethereumAccount.address,
+							encrypted_private_key: encryptionResult.encryptedKey,
+							iv: encryptionResult.iv,
+							salt: encryptionResult.salt,
 							export_account: false,
 							created_at: new Date(),
 						},
@@ -55,42 +57,15 @@ export default async function handler(
 					setTimeout(() => reject(new Error('DB operation timeout')), 5000)
 				),
 			]);
-			return res.status(200).json({ success: true, address: userId });
 		}
 
-		const ethereumAccount = generateEthereumAccount();
-		const encryptionResult = encryptPrivateKey(
-			ethereumAccount.privateKey,
-			userId
-		);
-		await Promise.race([
-			(usersCollection as any).updateOne(
-				{ username_email },
-				{
-					$setOnInsert: {
-						provider: provider ?? 'unknown',
-						username_email,
-						address: ethereumAccount.address,
-						encrypted_private_key: encryptionResult.encryptedKey,
-						iv: encryptionResult.iv,
-						salt: encryptionResult.salt,
-						export_account: false,
-						created_at: new Date(),
-					},
-				},
-				{ upsert: true }
-			),
-			new Promise((_, reject) =>
-				setTimeout(() => reject(new Error('DB operation timeout')), 5000)
-			),
-		]);
+		const finalUser = await usersCollection.findOne(query);
 
 		return res.status(200).json({
 			success: true,
-			address: ethereumAccount.address,
+			address: finalUser?.address,
 		});
 	} catch (error) {
-		console.error('Create user error:', error);
 		return res.status(500).json({
 			error: 'Database error',
 			details: error instanceof Error ? error.message : 'Unknown error',
