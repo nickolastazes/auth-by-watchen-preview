@@ -95,7 +95,7 @@ export default function TelegramButton({ className }: TelegramButtonProps) {
 			onClick={handleClick}
 			disabled={isLoading}
 			type='button'
-			className={`w-full focus-within:z-10 font-medium bg-gradient-to-b from-[#ffffff] via-[#fdfdfd] to-[#f3f3f3] border border-[#4B5563]/25 shadow-sm items-center rounded-xl focus:ring-1 focus:ring-inset focus:ring-blue-400 flex py-2.5 px-3 ${
+			className={`w-full focus-within:z-10 font-medium bg-linear-to-b from-[#ffffff] via-[#fdfdfd] to-[#f3f3f3] border border-[#4B5563]/25 shadow-sm items-center rounded-xl focus:ring-1 focus:ring-inset focus:ring-blue-400 flex py-2.5 px-3 ${
 				isLoading ? 'opacity-75 cursor-not-allowed' : ''
 			} ${className}`}
 			aria-label='Sign in with Telegram'>

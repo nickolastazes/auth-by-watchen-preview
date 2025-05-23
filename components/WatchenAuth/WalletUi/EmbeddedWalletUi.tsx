@@ -422,7 +422,7 @@ export default function EmbeddedWalletAltUi() {
 											WebkitBackdropFilter: 'blur(4px)',
 										}}
 									/>
-									<div className='fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[100vw] max-w-[450px] z-50'>
+									<div className='fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-screen max-w-[450px] z-50'>
 										<Dialog.Content asChild>
 											<motion.div
 												variants={modalVariants}
@@ -518,7 +518,7 @@ export default function EmbeddedWalletAltUi() {
 											WebkitBackdropFilter: 'blur(4px)',
 										}}
 									/>
-									<motion.div className='fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[100vw] max-w-[450px] z-50'>
+									<motion.div className='fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-screen max-w-[450px] z-50'>
 										<Dialog.Content asChild>
 											<motion.div
 												variants={modalVariants}
@@ -723,7 +723,7 @@ export default function EmbeddedWalletAltUi() {
 											WebkitBackdropFilter: 'blur(4px)',
 										}}
 									/>
-									<div className='fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[100vw] max-w-[450px] z-50'>
+									<div className='fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-screen max-w-[450px] z-50'>
 										<Dialog.Content asChild>
 											<motion.div
 												variants={modalVariants}
@@ -921,7 +921,7 @@ export default function EmbeddedWalletAltUi() {
 											WebkitBackdropFilter: 'blur(4px)',
 										}}
 									/>
-									<div className='fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-[100vw] max-w-[450px] z-50'>
+									<div className='fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-screen max-w-[450px] z-50'>
 										<Dialog.Content asChild>
 											<motion.div
 												variants={modalVariants}
@@ -1044,7 +1044,7 @@ export default function EmbeddedWalletAltUi() {
 																		</span>
 																	</div>
 																</div>
-																<div className='h-[1px] w-full bg-gradient-to-r from-[#4B5563]/0 via-[#4B5563]/40 to-[#4B5563]/0' />
+																<div className='h-px w-full bg-linear-to-r from-[#4B5563]/0 via-[#4B5563]/40 to-[#4B5563]/0' />
 																<fieldset className='flex items-center rounded-xl p-4 mb-1 relative'>
 																	<div className='flex'>
 																		<div className='relative'>
@@ -1073,7 +1073,7 @@ export default function EmbeddedWalletAltUi() {
 																				step='any'
 																				value={addressData.address}
 																			/>
-																			<div className='h-[1px] bg-[#4B5563]/40 my-[5px]' />
+																			<div className='h-px bg-[#4B5563]/40 my-[5px]' />
 																			<div className='flex items-center'>
 																				<input
 																					className='font-medium text-neutral-100 bg-transparent inline-flex h-[26.6px] w-full flex-1 items-center justify-center text-[14px] leading-none shadow-[0_0_0_0px] outline-none focus:shadow-[0_0_0_0px] [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none'
@@ -1133,7 +1133,7 @@ export default function EmbeddedWalletAltUi() {
 																</button>
 																{hash && (
 																	<>
-																		<div className='h-[1px] w-full mb-4 mt-4 bg-gradient-to-r from-[#4B5563]/0 via-[#4B5563]/40 to-[#4B5563]/0' />
+																		<div className='h-px w-full mb-4 mt-4 bg-linear-to-r from-[#4B5563]/0 via-[#4B5563]/40 to-[#4B5563]/0' />
 																		<div className='flex items-center justify-center'>
 																			<a
 																				href={`https://sepolia.basescan.org/tx/${hash}`}
@@ -1209,7 +1209,7 @@ export default function EmbeddedWalletAltUi() {
 									initial='hidden'
 									animate='visible'>
 									<motion.div
-										className='flex-grow relative flex flex-col'
+										className='grow relative flex flex-col'
 										variants={sectionVariants}>
 										<>
 											{/* USER INFO */}
@@ -1257,7 +1257,7 @@ export default function EmbeddedWalletAltUi() {
 												</div>
 											</motion.div>
 
-											<div className='h-[1px] w-full my-4' />
+											<div className='h-px w-full my-4' />
 
 											{/* BALANCE */}
 											<motion.section
@@ -1290,7 +1290,7 @@ export default function EmbeddedWalletAltUi() {
 														</svg>
 													</button>
 												</div>
-												<div className='h-[1px] w-full my-1' />
+												<div className='h-px w-full my-1' />
 												<div className='flex items-center justify-around gap-1'>
 													<button
 														className='w-full rounded-xl flex justify-center primarybtn space-x-2'
@@ -1340,7 +1340,7 @@ export default function EmbeddedWalletAltUi() {
 												</div>
 											</motion.section>
 
-											<div className='flex-grow' />
+											<div className='grow' />
 
 											{/* ADVANCED OPTIONS */}
 											<motion.section
@@ -1470,7 +1470,7 @@ export default function EmbeddedWalletAltUi() {
 												</AnimatePresence>
 											</motion.section>
 
-											<div className='h-[1px] w-full mb-4 mt-2 bg-gradient-to-r from-[#4B5563]/0 via-[#4B5563]/40 to-[#4B5563]/0' />
+											<div className='h-px w-full mb-4 mt-2 bg-linear-to-r from-[#4B5563]/0 via-[#4B5563]/40 to-[#4B5563]/0' />
 
 											<motion.section
 												className='w-full mt-auto'

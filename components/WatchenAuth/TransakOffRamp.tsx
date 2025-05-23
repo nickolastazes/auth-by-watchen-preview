@@ -150,7 +150,7 @@ function TransakOffRamp() {
 	}, [hasSetAmount, embeddedWallet]);
 
 	return (
-		<div className='w-full max-w-2xl mx-auto p-1 bg-white dark:bg-gradient-to-br dark:from-[#343D4B] dark:to-[#313A47] rounded-xl shadow-md'>
+		<div className='w-full max-w-2xl mx-auto p-1 bg-white dark:bg-linear-to-br dark:from-[#343D4B] dark:to-[#313A47] rounded-xl shadow-md'>
 			{orderSuccess && (
 				<div className='flex flex-col items-center justify-center h-[490px] sm:h-[560px]'>
 					<svg
@@ -213,7 +213,7 @@ function TransakOffRamp() {
 							Number(amountData.amount) > balance ||
 							Number(amountData.amount) <= 0 ||
 							Number(amountData.amount) < 0.0036
-								? 'text-sm py-2 px-3 rounded-xl font-medium bg-gradient-to-b from-[#1d43ff]/50 via-[#0025df]/50 to-[#0025df]/50 text-neutral-50/50 cursor-not-allowed justify-center'
+								? 'text-sm py-2 px-3 rounded-xl font-medium bg-linear-to-b from-[#1d43ff]/50 via-[#0025df]/50 to-[#0025df]/50 text-neutral-50/50 cursor-not-allowed justify-center'
 								: 'primarybtn'
 						}`}
 						disabled={

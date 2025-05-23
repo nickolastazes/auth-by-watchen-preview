@@ -15,7 +15,7 @@ export default function Home() {
 					<svg
 						viewBox='0 0 1108 632'
 						aria-hidden='true'
-						className='w-[69.25rem] flex-none'>
+						className='w-277 flex-none'>
 						<path
 							fill='url(#175c433f-44f6-4d59-93f0-c5c51ad5566d)'
 							fillOpacity='.2'
@@ -38,7 +38,7 @@ export default function Home() {
 			</section>
 			<section className='flex min-h-screen flex-col items-center justify-center relative max-w-2xl mx-auto'>
 				<section className='text-center mb-16 relative'>
-					<h1 className='text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-gradient-to-l from-neutral-300/50 via-neutral-100 to-neutral-100 tracking-tight mb-4 relative z-10 space-y-2 py-1'>
+					<h1 className='text-4xl md:text-5xl font-extrabold text-transparent bg-clip-text bg-linear-to-l from-neutral-300/50 via-neutral-100 to-neutral-100 tracking-tight mb-4 relative z-10 space-y-2 py-1'>
 						<span className='block'>Build Crypto Apps</span>
 						<span className='block'>for non-Crypto Users</span>
 					</h1>

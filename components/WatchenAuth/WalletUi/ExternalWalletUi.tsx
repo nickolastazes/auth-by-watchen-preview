@@ -216,7 +216,7 @@ export default function ExternalWalletAltUi() {
 									</div>
 								</motion.div>
 
-								<div className='h-[1px] w-full my-4' />
+								<div className='h-px w-full my-4' />
 
 								{/* BALANCE */}
 								<motion.section
@@ -249,9 +249,9 @@ export default function ExternalWalletAltUi() {
 									</div>
 								</motion.section>
 
-								<div className='flex-grow' />
+								<div className='grow' />
 
-								<div className='h-[1px] w-full mb-4 mt-2 bg-gradient-to-r from-[#4B5563]/0 via-[#4B5563]/40 to-[#4B5563]/0' />
+								<div className='h-px w-full mb-4 mt-2 bg-linear-to-r from-[#4B5563]/0 via-[#4B5563]/40 to-[#4B5563]/0' />
 
 								<motion.section
 									className='w-full mt-auto'
