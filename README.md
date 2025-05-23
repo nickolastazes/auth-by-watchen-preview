@@ -182,7 +182,7 @@ To switch to a different network, modify the network configuration in your envir
 
   ## 📋 Changelog
 
-### [0.0.4] - 2024-01-03
+### [0.0.4] - 2025-01-03
 
 #### Added
 
