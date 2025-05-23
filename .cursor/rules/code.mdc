@@ -1,0 +1,119 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# [CRYPTO PROJECT]
+
+## Project Context
+
+[INSERT DESCRIPTION OF YOUR PROJECT]
+
+- Security and UX are our first priorities.
+
+## Code Style and Structure
+
+- Write concise, technical TypeScript code with accurate examples
+- Use functional and declarative programming patterns; avoid classes
+- Prefer iteration and modularization over code duplication
+- Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError)
+- Always be careful to follow good practises for Web Vitals (LCP, CLS, FID).
+- Use function, not const, for components
+- Use Tailwind and Tailwind Aria for components and styling.
+- Refer to Next.js documentation via the Context7 MCP for Data Fetching, Rendering, and Routing best practices.
+- Minimize 'useEffect'
+
+## Tech Stack
+
+- TypeScript
+- Node.js
+- Next.js 15 Pages Router
+- React
+- Viem v1 & v2
+- Wagmi v1 & v2
+- Tailwind
+- MongoDB
+- Transak for crypto on and off ramp
+
+## Naming Conventions
+
+- Use lowercase with dashes for directories (e.g., components/form-wizard)
+- Favor named exports for components and utilities
+- Use PascalCase for component files (e.g., VisaForm.tsx)
+- Use camelCase for utility files (e.g., formValidator.ts)
+
+## TypeScript Usage
+
+- Use TypeScript for all code; prefer interfaces over types
+- Avoid enums; use const objects with 'as const' assertion
+- Use functional components with TypeScript interfaces
+- Define strict types for message passing between different parts of the extension
+- Use absolute imports for all files @/...
+- Avoid try/catch blocks unless there's good reason to translate or handle error in that abstraction
+- Use explicit return types for all functions
+
+## State Management
+
+- Use React Context for global state when needed
+- Implement proper cleanup in useEffect hooks
+
+## Syntax and Formatting
+
+- Use "function" keyword for pure functions
+- Avoid unnecessary curly braces in conditionals
+- Use declarative JSX
+- Implement proper TypeScript discriminated unions for message types
+
+## UI and Styling
+
+- Use Tailwind CSS for styling
+- Use Framer motion for smooth animations
+- Hover must always be in larger screens e.g. lg:hover:[CLASS]
+
+## Error Handling
+
+- Implement proper error boundaries
+- Log errors appropriately for debugging
+- Provide user-friendly error messages
+- Handle network failures gracefully
+- Prioritize error handling and edge cases:
+  - Handle errors and edge cases at the beginning of functions.
+  - Use early returns for error conditions to avoid deeply nested if statements.
+  - Avoid unnecessary else statements; use if-return pattern instead.
+  - Use guard clauses to handle preconditions and invalid states early.
+  - Implement proper error logging and user-friendly error messages.
+
+## Security
+
+- Implement Content Security Policy
+- Sanitize user inputs
+- Handle sensitive data properly
+- Implement proper CORS handling
+- Make use of the middleware
+
+## Git Usage
+
+Commit Message Prefixes:
+
+- "fix:" for bug fixes
+- "feat:" for new features
+- "perf:" for performance improvements
+- "docs:" for documentation changes
+- "style:" for formatting changes
+- "refactor:" for code refactoring
+- "test:" for adding missing tests
+- "chore:" for maintenance tasks
+
+Rules:
+
+- Use lowercase for commit messages
+- Keep the summary line concise
+- Include description for non-obvious changes
+- Reference issue numbers when applicable
+
+## Development Workflow
+
+- Use proper version control
+- Implement proper code review process
+- Follow semantic versioning for releases
+- Maintain changelog
