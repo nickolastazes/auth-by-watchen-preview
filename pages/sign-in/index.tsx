@@ -1,12 +1,12 @@
 import { Suspense } from 'react';
-import MainLogin from '../../components/WatchenAuth/MainLogin';
+import WatchenAuth from '../../components/WatchenAuth/WatchenAuth';
 import { Toaster } from 'sonner';
 
 function Login() {
 	return (
 		<Suspense fallback={<div className='text-white'>Loading...</div>}>
 			<Toaster />
-			<MainLogin />
+			<WatchenAuth />
 		</Suspense>
 	);
 }

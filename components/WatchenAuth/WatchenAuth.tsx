@@ -40,7 +40,7 @@ const SOCIAL_PROVIDERS = [
 	},
 ];
 
-function MainLogin() {
+export default function WatchenAuth() {
 	const router = useRouter();
 	const [recentProvider, setRecentProvider] = useState<string>();
 	const [mounted, setMounted] = useState(false);
@@ -387,5 +387,3 @@ function MainLogin() {
 		</Suspense>
 	);
 }
-
-export default MainLogin;
