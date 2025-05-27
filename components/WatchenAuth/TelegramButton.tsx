@@ -95,7 +95,7 @@ export default function TelegramButton({ className }: TelegramButtonProps) {
 			onClick={handleClick}
 			disabled={isLoading}
 			type='button'
-			className={`w-full focus-within:z-10 font-medium bg-linear-to-b from-[#ffffff] via-[#fdfdfd] to-[#f3f3f3] border border-[#4B5563]/25 shadow-sm items-center rounded-xl focus:ring-1 focus:ring-inset focus:ring-blue-400 flex py-2.5 px-3 ${
+			className={`w-full items-stretch focus-within:z-10 bg-linear-to-b from-white to-[#fdfdfd] shadow-[0_0_10px_rgba(0,0,0,0.05)] border border-[#4B5563]/25 rounded-md focus:ring-1 focus:ring-inset focus:ring-blue-400 flex py-2.5 px-3 ${
 				isLoading ? 'opacity-75 cursor-not-allowed' : ''
 			} ${className}`}
 			aria-label='Sign in with Telegram'>
@@ -121,7 +121,7 @@ export default function TelegramButton({ className }: TelegramButtonProps) {
 				<img
 					src='/signinlogos/telegram.svg'
 					alt='Telegram logo'
-					className='w-6 h-6'
+					className='w-[18px] h-[18px]'
 					width={24}
 					height={24}
 				/>

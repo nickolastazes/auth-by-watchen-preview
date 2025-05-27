@@ -15,7 +15,7 @@ const SUPPORTED_WALLETS = [
 
 const SOCIAL_PROVIDERS = [
 	{ id: 'google', logo: 'google.svg', name: 'Google' },
-	{ id: 'twitter', logo: 'x.svg', name: 'X (Twitter)' },
+	{ id: 'twitter', logo: 'x.svg', name: 'X' },
 	{ id: 'discord', logo: 'discord.svg', name: 'Discord' },
 	{
 		id: 'farcaster',
@@ -128,7 +128,7 @@ function MainLogin() {
 		isRecent: boolean
 	) => (
 		<button
-			className={`w-full items-stretch focus-within:z-10 font-medium bg-linear-to-b from-[#ffffff] via-[#fdfdfd] to-[#f3f3f3] border border-[#4B5563]/25 shadow-sm rounded-xl focus:ring-1 focus:ring-inset focus:ring-blue-400 flex ${
+			className={`w-full items-stretch focus-within:z-10 bg-linear-to-b from-white to-[#fdfdfd] shadow-[0_0_10px_rgba(0,0,0,0.05)] border border-[#4B5563]/25 rounded-md focus:ring-1 focus:ring-inset focus:ring-blue-400 flex ${
 				loadingProvider === id ? 'opacity-75 cursor-not-allowed' : ''
 			}`}
 			onClick={() => handleSocialAuth(id)}
@@ -157,10 +157,10 @@ function MainLogin() {
 						<img
 							src={`/signinlogos/${logo}`}
 							alt={`${name} logo`}
-							className='w-6 h-6'
+							className='w-[18px] h-[18px]'
 						/>
 					)}
-					<span className='text-neutral-900 font-medium text-sm pl-2.5'>
+					<span className='text-neutral-900 text-sm pl-2.5'>
 						{loadingProvider === id ? `Signing in with ${name}...` : name}
 					</span>
 				</div>
@@ -193,11 +193,11 @@ function MainLogin() {
 
 	return (
 		<Suspense fallback={<div className='text-white'>Loading...</div>}>
-			<div className='fixed inset-0 flex flex-col'>
+			<div className='min-h-screen w-full flex items-center justify-center bg-neutral-900'>
 				{!showWallets && (
 					<button
 						onClick={() => router.push('/')}
-						className='absolute top-5 left-5 z-10 flex items-center text-sm font-medium text-neutral-300'>
+						className='absolute top-5 left-5 z-10 flex items-center text-sm font-medium text-neutral-300 hover:text-neutral-100 transition'>
 						<svg
 							xmlns='http://www.w3.org/2000/svg'
 							width='18'
@@ -210,69 +210,93 @@ function MainLogin() {
 							strokeLinejoin='round'>
 							<path d='m15 18-6-6 6-6' />
 						</svg>
-						Back
+						<span className='ml-1'>Back</span>
 					</button>
 				)}
-
-				<main className='flex-1 flex items-center justify-center px-2'>
-					<div className='w-full max-w-[370px]'>
-						<div className='bg-white rounded-3xl px-9 py-5 border border-[#4B5563]/30 shadow-sm'>
-							<h1 className='text-xl md:text-2xl font-bold text-transparent bg-clip-text bg-linear-to-b from-neutral-900 via-neutral-800 to-neutral-900/50 tracking-tight text-center mb-1'>
+				<main className='w-full flex items-center justify-center px-2'>
+					<div className='w-full max-w-sm'>
+						<div className='bg-white rounded-xl p-8 border border-[#4B5563]/20 shadow-md'>
+							<img
+								src='/signinlogos/auth-by-watchen-black.svg'
+								alt='Watchen Auth'
+								className='w-auto h-7 mx-auto mb-4'
+							/>
+							<h1 className='text-2xl font-bold text-neutral-900 text-center mb-1'>
 								Sign in
 							</h1>
-							<h2 className='text-sm text-neutral-500 text-center mb-5'>
-								Please choose one of the following options to continue.
+							<h2 className='text-sm text-neutral-500 text-center mb-6'>
+								Choose your preferred method to continue
 							</h2>
 							{!showWallets ? (
 								<>
+									{mounted && recentProvider && (
+										<p className='text-xs text-neutral-500 mb-2'>
+											You recently used:
+										</p>
+									)}
 									<div className='space-y-3'>
 										{mounted && recentProvider && (
-											<p className='text-[13px] text-neutral-500'>
-												You recently used:
-											</p>
-										)}
-
-										{sortedProviders.map((provider, idx) => (
-											<React.Fragment key={provider.id}>
-												{provider.custom
-													? provider.custom(provider.id === recentProvider)
-													: renderSocialButton(
-															provider.id,
-															provider.logo,
-															provider.name,
-															provider.id === recentProvider
-													  )}
-												{idx === 0 &&
-													provider.id === recentProvider &&
-													mounted && (
-														<div className='bg-linear-to-l from-transparent via-[#4B5563]/30 to-transparent h-px w-full my-3' />
-													)}
+											<React.Fragment>
+												{sortedProviders
+													.filter((p) => p.id === recentProvider)
+													.map((provider) => (
+														<React.Fragment key={provider.id}>
+															{provider.custom
+																? provider.custom(true)
+																: renderSocialButton(
+																		provider.id,
+																		provider.logo,
+																		provider.name,
+																		true
+																  )}
+														</React.Fragment>
+													))}
 											</React.Fragment>
-										))}
+										)}
+										{mounted && recentProvider && (
+											<div className='flex items-center'>
+												<div className='flex-grow h-px bg-gray-200 mx-0.5' />
+											</div>
+										)}
+										{sortedProviders
+											.filter((p) => p.id !== recentProvider)
+											.map((provider) => (
+												<React.Fragment key={provider.id}>
+													{provider.custom
+														? provider.custom(false)
+														: renderSocialButton(
+																provider.id,
+																provider.logo,
+																provider.name,
+																false
+														  )}
+												</React.Fragment>
+											))}
 									</div>
-
-									<div className='bg-linear-to-l from-transparent via-[#4B5563]/30 to-transparent h-px w-full my-5' />
-
+									<div className='flex items-center my-4'>
+										<div className='flex-grow h-px bg-gray-200' />
+										<span className='mx-3 text-xs text-neutral-400'>OR</span>
+										<div className='flex-grow h-px bg-gray-200' />
+									</div>
 									<button
 										onClick={() => setShowWallets(true)}
-										className='w-full items-stretch focus-within:z-10 bg-linear-to-b from-[#ffffff] via-[#fdfdfd] to-[#f3f3f3] border border-[#4B5563]/25 shadow-sm rounded-xl focus:ring-1 focus:ring-inset focus:ring-blue-400 flex'>
-										<span className='flex items-center py-2.5 px-3'>
-											<svg
-												xmlns='http://www.w3.org/2000/svg'
-												width='22'
-												height='22'
-												viewBox='0 0 24 24'
-												fill='none'
-												stroke='#000'
-												strokeWidth='1.6'
-												strokeLinecap='round'
-												strokeLinejoin='round'>
-												<path d='M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1' />
-												<path d='M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4' />
-											</svg>
-											<span className='text-neutral-900 font-medium text-sm ml-3'>
-												Connect Wallet
-											</span>
+										className='w-full flex items-center border border-gray-200 rounded-md bg-white hover:bg-gray-50 transition text-sm px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2'>
+										<svg
+											xmlns='http://www.w3.org/2000/svg'
+											width='20'
+											height='20'
+											viewBox='0 0 24 24'
+											fill='none'
+											stroke='#000'
+											strokeWidth='1.6'
+											strokeLinecap='round'
+											strokeLinejoin='round'
+											className='mr-3'>
+											<path d='M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1' />
+											<path d='M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4' />
+										</svg>
+										<span className='text-neutral-900 text-sm'>
+											Connect wallet
 										</span>
 									</button>
 								</>
@@ -283,14 +307,14 @@ function MainLogin() {
 											<button
 												onClick={handleWalletAuth}
 												disabled={isAuthenticating}
-												className={`w-full flex items-center justify-center focus-within:z-10 text-sm py-2 px-3 rounded-xl font-medium bg-linear-to-b from-[#1d43ff] via-[#0025df] to-[#0025df] text-neutral-50 select-none shadow-md ${
+												className={`w-full flex items-center justify-center text-sm py-2.5 px-4 rounded-md font-medium bg-blue-600 text-white shadow-sm transition focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 ${
 													isAuthenticating
 														? 'opacity-75 cursor-not-allowed'
 														: ''
 												}`}>
 												{isAuthenticating && (
 													<svg
-														className='animate-spin h-4 w-4 text-neutral-100 mr-2'
+														className='animate-spin h-4 w-4 text-white mr-2'
 														xmlns='http://www.w3.org/2000/svg'
 														fill='none'
 														viewBox='0 0 24 24'>
@@ -322,23 +346,22 @@ function MainLogin() {
 												<button
 													key={connector.uid}
 													onClick={() => connect({ connector })}
-													className='w-full flex items-center p-2.5 bg-linear-to-b from-[#ffffff] via-[#fdfdfd] to-[#f3f3f3] border border-[#4B5563]/25 rounded-xl shadow-sm'>
+													className='w-full flex items-center border border-gray-200 rounded-md bg-white hover:bg-gray-50 transition px-4 py-2.5'>
 													<img
 														src={`/signinlogos/${connector.name}.svg`}
 														alt={connector.name}
-														className='w-6 h-6 rounded-full'
+														className='w-[18px] h-[18px] rounded-full mr-3'
 													/>
-													<span className='text-sm font-medium ml-3'>
+													<span className='text-sm text-neutral-900'>
 														{connector.name === 'Injected'
 															? 'Browser Wallet'
 															: connector.name}
 													</span>
 												</button>
 											))}
-
 											<button
 												onClick={() => setShowWallets(false)}
-												className='w-full p-3 text-sm text-neutral-900 underline'>
+												className='w-full p-2 text-sm text-neutral-500 underline'>
 												Back to all options
 											</button>
 										</div>
@@ -346,20 +369,17 @@ function MainLogin() {
 								</>
 							)}
 						</div>
-
-						<div className='border-x border-b border-gray-600/20 -mt-5 pt-7 pb-2 rounded-b-3xl bg-neutral-100 relative -z-10'>
-							<a
-								href='https://auth.watchen.xyz'
-								target='_blank'
-								rel='noopener noreferrer'
-								className='flex items-center justify-center gap-1.5'>
-								<span className='text-[13px] text-neutral-500'>powered by</span>
-								<img
-									src='/signinlogos/auth-by-watchen-black.svg'
-									alt='Watchen Auth'
-									className='w-14 h-auto'
-								/>
-							</a>
+						<div className='pt-5 text-center'>
+							<span className='text-xs text-neutral-500'>
+								Secured with{' '}
+								<a
+									href='https://auth.watchen.xyz'
+									target='_blank'
+									rel='noopener noreferrer'
+									className='font-semibold'>
+									Auth by Watchen
+								</a>
+							</span>
 						</div>
 					</div>
 				</main>

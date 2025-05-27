@@ -99,7 +99,7 @@ const FarcasterButton = ({
 				<button
 					onClick={handleSignIn}
 					disabled={!url || isLoading}
-					className={`w-full focus-within:z-10 font-medium bg-linear-to-b from-[#ffffff] via-[#fdfdfd] to-[#f3f3f3] border border-[#4B5563]/25 shadow-sm items-center rounded-xl focus:ring-1 focus:ring-inset focus:ring-blue-400 flex py-2.5 px-3 ${
+					className={`w-full px-3 py-2.5 items-stretch focus-within:z-10 bg-linear-to-b from-white to-[#fdfdfd] shadow-[0_0_10px_rgba(0,0,0,0.05)] border border-[#4B5563]/25 rounded-md focus:ring-1 focus:ring-inset focus:ring-blue-400 flex ${
 						isLoading ? 'opacity-75 cursor-not-allowed' : ''
 					}`}>
 					{isLoading ? (
@@ -124,7 +124,7 @@ const FarcasterButton = ({
 						<img
 							src='/signinlogos/farcaster.svg'
 							alt='Farcaster logo'
-							className='w-6 h-6'
+							className='w-[18px] h-[18px]'
 						/>
 					)}
 					<span className='text-neutral-900 text-sm pl-2.5'>
