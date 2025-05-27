@@ -182,6 +182,21 @@ To switch to a different network, modify the network configuration in your envir
 
   ## 📋 Changelog
 
+### [0.0.5] - 2025-05-27
+
+#### Added
+
+- `WatchenAuth` component in the sign-in page now accepts the following props:
+  - `providers`: an array of provider IDs (e.g., `['google', 'x', 'wallet']`) to control which authentication providers are shown and in what order.
+  - `img`: a string for the image path to display at the top of the sign-in UI.
+- Only the selected providers are rendered, in the order given by the `providers` prop.
+- If no `providers` prop is specified, all providers are shown by default.
+- The image at the top of the sign-in UI is now configurable via the `img` prop.
+
+#### Changed
+
+- Developers can now configure which providers to display and the top image without modifying the `WatchenAuth.tsx` component directly.
+
 ### [0.0.4] - 2025-01-03
 
 #### Added

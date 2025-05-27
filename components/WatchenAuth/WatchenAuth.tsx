@@ -1,11 +1,16 @@
-import { useRouter } from 'next/router';
 import React, { Suspense, useEffect, useState } from 'react';
+import { useRouter } from 'next/router';
 import { getCsrfToken, signIn, useSession } from 'next-auth/react';
 import { SiweMessage } from 'siwe';
 import { useAccount, useConnect, useSignMessage, useDisconnect } from 'wagmi';
 import FarcasterButton from './FarcasterButton';
 import TelegramButton from './TelegramButton';
 import { toast } from 'sonner';
+
+interface WatchenAuthProps {
+	providers?: string[]; // e.g. ['google', 'x', 'wallet']
+	img?: string; // e.g. '/signinlogos/auth-by-watchen-black.svg'
+}
 
 const SUPPORTED_WALLETS = [
 	'Injected',
@@ -15,7 +20,7 @@ const SUPPORTED_WALLETS = [
 
 const SOCIAL_PROVIDERS = [
 	{ id: 'google', logo: 'google.svg', name: 'Google' },
-	{ id: 'twitter', logo: 'x.svg', name: 'X' },
+	{ id: 'x', logo: 'x.svg', name: 'X', realId: 'twitter' },
 	{ id: 'discord', logo: 'discord.svg', name: 'Discord' },
 	{
 		id: 'farcaster',
@@ -40,7 +45,7 @@ const SOCIAL_PROVIDERS = [
 	},
 ];
 
-export default function WatchenAuth() {
+export default function WatchenAuth({ providers, img }: WatchenAuthProps) {
 	const router = useRouter();
 	const [recentProvider, setRecentProvider] = useState<string>();
 	const [mounted, setMounted] = useState(false);
@@ -53,6 +58,24 @@ export default function WatchenAuth() {
 	const { connect, connectors } = useConnect();
 	const { data: session, status } = useSession();
 	const { disconnect } = useDisconnect();
+
+	// Default providers: all social + wallet
+	const defaultProviders = [
+		'google',
+		'x',
+		'discord',
+		'farcaster',
+		'telegram',
+		'wallet',
+	];
+	const selectedProviders =
+		providers && providers.length > 0 ? providers : defaultProviders;
+
+	// Map 'x' to 'twitter' for next-auth
+	function getProviderId(id: string) {
+		if (id === 'x') return 'twitter';
+		return id;
+	}
 
 	useEffect(() => {
 		setMounted(true);
@@ -75,7 +98,9 @@ export default function WatchenAuth() {
 			if (isConnected) {
 				disconnect();
 			}
-			await signIn(provider, { callbackUrl: `${window.location.origin}/app` });
+			await signIn(getProviderId(provider), {
+				callbackUrl: `${window.location.origin}/app`,
+			});
 		} catch (err) {
 			toast.error(`Failed to authenticate with ${provider}`);
 		} finally {
@@ -85,11 +110,9 @@ export default function WatchenAuth() {
 
 	const handleWalletAuth = async () => {
 		setIsAuthenticating(true);
-
 		try {
 			const nonce = await getCsrfToken();
 			if (!nonce) throw new Error('Missing CSRF token');
-
 			const message = new SiweMessage({
 				domain: window.location.host,
 				address: address,
@@ -99,18 +122,15 @@ export default function WatchenAuth() {
 				chainId: 84532,
 				nonce,
 			});
-
 			const signature = await signMessageAsync({
 				message: message.prepareMessage(),
 			});
-
 			const result = await signIn('external-wallet', {
 				message: JSON.stringify(message),
 				redirect: false,
 				signature,
 				callbackUrl: `${window.location.origin}/app`,
 			});
-
 			if (result?.url) {
 				router.push(result.url);
 			}
@@ -184,12 +204,19 @@ export default function WatchenAuth() {
 				SUPPORTED_WALLETS.indexOf(b.name as (typeof SUPPORTED_WALLETS)[number])
 		);
 
+	// Filter and order providers based on selectedProviders
+	const filteredProviders = selectedProviders
+		.filter((id) => id !== 'wallet')
+		.map((id) => SOCIAL_PROVIDERS.find((p) => p.id === id))
+		.filter(Boolean) as typeof SOCIAL_PROVIDERS;
+
+	// For recent provider logic, only consider those in selectedProviders
 	const sortedProviders = mounted
 		? [
-				...SOCIAL_PROVIDERS.filter((p) => p.id === recentProvider),
-				...SOCIAL_PROVIDERS.filter((p) => p.id !== recentProvider),
+				...filteredProviders.filter((p) => p.id === recentProvider),
+				...filteredProviders.filter((p) => p.id !== recentProvider),
 		  ]
-		: SOCIAL_PROVIDERS;
+		: filteredProviders;
 
 	return (
 		<Suspense fallback={<div className='text-white'>Loading...</div>}>
@@ -217,7 +244,7 @@ export default function WatchenAuth() {
 					<div className='w-full max-w-sm'>
 						<div className='bg-white rounded-xl p-8 border border-[#4B5563]/20 shadow-md'>
 							<img
-								src='/signinlogos/auth-by-watchen-black.svg'
+								src={img || '/signinlogos/auth-by-watchen-black.svg'}
 								alt='Watchen Auth'
 								className='w-auto h-7 mx-auto mb-4'
 							/>
@@ -229,35 +256,41 @@ export default function WatchenAuth() {
 							</h2>
 							{!showWallets ? (
 								<>
-									{mounted && recentProvider && (
-										<p className='text-xs text-neutral-500 mb-2'>
-											You recently used:
-										</p>
-									)}
+									{mounted &&
+										recentProvider &&
+										sortedProviders.some((p) => p.id === recentProvider) && (
+											<p className='text-xs text-neutral-500 mb-2'>
+												You recently used:
+											</p>
+										)}
 									<div className='space-y-3'>
-										{mounted && recentProvider && (
-											<React.Fragment>
-												{sortedProviders
-													.filter((p) => p.id === recentProvider)
-													.map((provider) => (
-														<React.Fragment key={provider.id}>
-															{provider.custom
-																? provider.custom(true)
-																: renderSocialButton(
-																		provider.id,
-																		provider.logo,
-																		provider.name,
-																		true
-																  )}
-														</React.Fragment>
-													))}
-											</React.Fragment>
-										)}
-										{mounted && recentProvider && (
-											<div className='flex items-center'>
-												<div className='flex-grow h-px bg-gray-200 mx-0.5' />
-											</div>
-										)}
+										{mounted &&
+											recentProvider &&
+											sortedProviders.some((p) => p.id === recentProvider) && (
+												<React.Fragment>
+													{sortedProviders
+														.filter((p) => p.id === recentProvider)
+														.map((provider) => (
+															<React.Fragment key={provider.id}>
+																{provider.custom
+																	? provider.custom(true)
+																	: renderSocialButton(
+																			provider.id,
+																			provider.logo,
+																			provider.name,
+																			true
+																	  )}
+															</React.Fragment>
+														))}
+												</React.Fragment>
+											)}
+										{mounted &&
+											recentProvider &&
+											sortedProviders.some((p) => p.id === recentProvider) && (
+												<div className='flex items-center'>
+													<div className='flex-grow h-px bg-gray-200 mx-0.5' />
+												</div>
+											)}
 										{sortedProviders
 											.filter((p) => p.id !== recentProvider)
 											.map((provider) => (
@@ -273,32 +306,38 @@ export default function WatchenAuth() {
 												</React.Fragment>
 											))}
 									</div>
-									<div className='flex items-center my-4'>
-										<div className='flex-grow h-px bg-gray-200' />
-										<span className='mx-3 text-xs text-neutral-400'>OR</span>
-										<div className='flex-grow h-px bg-gray-200' />
-									</div>
-									<button
-										onClick={() => setShowWallets(true)}
-										className='w-full flex items-center border border-gray-200 rounded-md bg-white hover:bg-gray-50 transition text-sm px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2'>
-										<svg
-											xmlns='http://www.w3.org/2000/svg'
-											width='20'
-											height='20'
-											viewBox='0 0 24 24'
-											fill='none'
-											stroke='#000'
-											strokeWidth='1.6'
-											strokeLinecap='round'
-											strokeLinejoin='round'
-											className='mr-3'>
-											<path d='M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1' />
-											<path d='M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4' />
-										</svg>
-										<span className='text-neutral-900 text-sm'>
-											Connect wallet
-										</span>
-									</button>
+									{selectedProviders.includes('wallet') && (
+										<>
+											<div className='flex items-center my-4'>
+												<div className='flex-grow h-px bg-gray-200' />
+												<span className='mx-3 text-xs text-neutral-400'>
+													OR
+												</span>
+												<div className='flex-grow h-px bg-gray-200' />
+											</div>
+											<button
+												onClick={() => setShowWallets(true)}
+												className='w-full flex items-center border border-gray-200 rounded-md bg-white hover:bg-gray-50 transition text-sm px-3 py-2.5 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2'>
+												<svg
+													xmlns='http://www.w3.org/2000/svg'
+													width='20'
+													height='20'
+													viewBox='0 0 24 24'
+													fill='none'
+													stroke='#000'
+													strokeWidth='1.6'
+													strokeLinecap='round'
+													strokeLinejoin='round'
+													className='mr-3'>
+													<path d='M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1' />
+													<path d='M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4' />
+												</svg>
+												<span className='text-neutral-900 text-sm'>
+													Connect wallet
+												</span>
+											</button>
+										</>
+									)}
 								</>
 							) : (
 								<>

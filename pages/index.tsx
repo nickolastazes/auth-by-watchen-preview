@@ -70,7 +70,7 @@ export default function Home() {
 				<section className='absolute bottom-10'>
 					<div className='justify-center mb-2'>
 						<p className='text-xs text-neutral-300 text-center'>
-							preview 0.0.4
+							preview 0.0.5
 						</p>
 					</div>
 					<img
