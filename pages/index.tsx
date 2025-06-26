@@ -74,7 +74,7 @@ export default function Home() {
 						</p>
 					</div>
 					<img
-						src='/auth-by-watchen.svg'
+						src='/watchen-auth-logo.svg'
 						alt='Watchen Auth logo'
 						className='w-[125px] h-auto mx-auto'
 					/>

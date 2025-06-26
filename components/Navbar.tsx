@@ -1,6 +1,5 @@
-import React, { Suspense } from 'react';
+import React from 'react';
 import Wallet from './WatchenAuth/Wallet';
-import WalletSkeleton from './WatchenAuth/WalletUi/WalletSkeleton';
 
 function Navbar() {
 	return (

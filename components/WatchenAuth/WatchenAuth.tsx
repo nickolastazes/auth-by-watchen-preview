@@ -8,8 +8,8 @@ import TelegramButton from './TelegramButton';
 import { toast } from 'sonner';
 
 interface WatchenAuthProps {
-	providers?: string[]; // e.g. ['google', 'x', 'wallet']
-	img?: string; // e.g. '/signinlogos/auth-by-watchen-black.svg'
+	providers?: string[];
+	img?: string;
 }
 
 const SUPPORTED_WALLETS = [
@@ -224,7 +224,7 @@ export default function WatchenAuth({ providers, img }: WatchenAuthProps) {
 				{!showWallets && (
 					<button
 						onClick={() => router.push('/')}
-						className='absolute top-5 left-5 z-10 flex items-center text-sm font-medium text-neutral-300 hover:text-neutral-100 transition'>
+						className='absolute top-5 left-2 md:left-5 z-10 flex items-center text-sm font-medium text-neutral-300 hover:text-neutral-100 transition'>
 						<svg
 							xmlns='http://www.w3.org/2000/svg'
 							width='18'
@@ -237,7 +237,7 @@ export default function WatchenAuth({ providers, img }: WatchenAuthProps) {
 							strokeLinejoin='round'>
 							<path d='m15 18-6-6 6-6' />
 						</svg>
-						<span className='ml-1'>Back</span>
+						<span>Back</span>
 					</button>
 				)}
 				<main className='w-full flex items-center justify-center px-2'>
@@ -408,17 +408,23 @@ export default function WatchenAuth({ providers, img }: WatchenAuthProps) {
 								</>
 							)}
 						</div>
-						<div className='pt-5 text-center'>
-							<span className='text-xs text-neutral-500'>
-								Secured with{' '}
-								<a
-									href='https://auth.watchen.xyz'
-									target='_blank'
-									rel='noopener noreferrer'
-									className='font-semibold'>
+						<div className='mt-5 flex items-center justify-center text-center'>
+							<a
+								href='https://auth.watchen.xyz'
+								target='_blank'
+								rel='noopener noreferrer'>
+								<span className='text-xs text-neutral-500 mr-1'>
+									Secured with{' '}
+								</span>
+								<img
+									src='/watchen-icon.svg'
+									alt='Watchen Auth logo'
+									className='w-3 h-3 inline-block mr-0.5 align-middle'
+								/>
+								<span className='text-xs text-neutral-500 font-semibold'>
 									Auth by Watchen
-								</a>
-							</span>
+								</span>
+							</a>
 						</div>
 					</div>
 				</main>
