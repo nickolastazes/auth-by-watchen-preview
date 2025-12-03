@@ -20,7 +20,7 @@
 		"ethers": "^6.14.1",
 		"mongodb": "^6.16.0",
 		"motion": "^12.12.2",
-		"next": "^15.1.8",
+		"next": "15.1.9",
 		"next-auth": "^4.24.11",
 		"react": "^19.1.0",
 		"react-confetti-boom": "^1.1.2",
