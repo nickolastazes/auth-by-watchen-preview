@@ -7,7 +7,7 @@ import { toast } from 'sonner';
 import { formatEther, createPublicClient, http } from 'viem';
 import { baseSepolia } from 'viem/chains';
 import * as Dialog from '@radix-ui/react-dialog';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 
 // Responsive hook to detect if screen is small
 function useIsMobile(): boolean {
@@ -209,9 +209,7 @@ export default function ExternalWalletAltUi() {
 											initial='hidden'
 											animate='visible'>
 											{/* USER INFO */}
-											<motion.div
-												className='flex items-center space-x-2'
-												variants={sectionVariants}>
+											<motion.div className='flex items-center space-x-2'>
 												<div className='w-[40px] h-[40px] relative'>
 													<img
 														src='/default-image.svg'
@@ -268,9 +266,7 @@ export default function ExternalWalletAltUi() {
 											<div className='h-px w-full my-4' />
 
 											{/* BALANCE */}
-											<motion.section
-												className='flex flex-col'
-												variants={sectionVariants}>
+											<motion.section className='flex flex-col'>
 												<p className='text-xs text-neutral-300'>
 													Account balance:
 												</p>
@@ -304,9 +300,7 @@ export default function ExternalWalletAltUi() {
 
 											<div className='h-px w-full mb-4 mt-2 bg-linear-to-r from-[#4B5563]/0 via-[#4B5563]/40 to-[#4B5563]/0' />
 
-											<motion.section
-												className='w-full mt-auto'
-												variants={sectionVariants}>
+											<motion.section className='w-full mt-auto'>
 												<div className='flex items-center justify-between mb-3'>
 													<p className='text-xs text-neutral-300'>
 														You signed in with
@@ -317,9 +311,7 @@ export default function ExternalWalletAltUi() {
 												</div>
 											</motion.section>
 											{/* LOGOUT */}
-											<motion.section
-												className='w-full mt-auto'
-												variants={sectionVariants}>
+											<motion.section className='w-full mt-auto'>
 												<button
 													onClick={handleSignOut}
 													className='inline-flex justify-center space-x-1 w-full text-sm py-2 px-3 items-center border border-[#4B5563]/40 rounded-xl font-medium bg-white/10 text-neutral-100 shadow-md'>

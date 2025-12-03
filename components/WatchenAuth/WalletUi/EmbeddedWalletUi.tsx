@@ -9,7 +9,7 @@ import { formatEther } from 'viem';
 import QRCode from 'react-qr-code';
 import TransakOnRamp from '../TransakOnRamp';
 import TransakOffRamp from '../TransakOffRamp';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion, AnimatePresence } from 'motion/react';
 
 // Responsive hook to detect if screen is small
 function useIsMobile(): boolean {
@@ -430,7 +430,6 @@ export default function EmbeddedWalletAltUi() {
 								onOpenChange={setIsDeleteDialogOpen}>
 								<Dialog.Portal>
 									<motion.div
-										variants={overlayVariants}
 										initial='hidden'
 										animate='visible'
 										className='fixed inset-0 bg-black/40 backdrop-blur-sm z-50'
@@ -441,8 +440,6 @@ export default function EmbeddedWalletAltUi() {
 									<div className='fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-screen max-w-[450px] z-50'>
 										<Dialog.Content asChild>
 											<motion.div
-												variants={modalVariants}
-												initial='hidden'
 												animate='visible'
 												className='rounded-xl bg-[#1a1a1a] border border-yellow-500 p-6 shadow-lg focus:outline-none'>
 												<div className='flex justify-between items-center mb-2'>
@@ -526,7 +523,6 @@ export default function EmbeddedWalletAltUi() {
 								onOpenChange={setIsExportDialogOpen}>
 								<Dialog.Portal>
 									<motion.div
-										variants={overlayVariants}
 										initial='hidden'
 										animate='visible'
 										className='fixed inset-0 bg-black/40 backdrop-blur-sm z-50'
@@ -537,7 +533,6 @@ export default function EmbeddedWalletAltUi() {
 									<motion.div className='fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-screen max-w-[450px] z-50'>
 										<Dialog.Content asChild>
 											<motion.div
-												variants={modalVariants}
 												initial='hidden'
 												animate='visible'
 												className='rounded-xl bg-[#1a1a1a] border border-red-500 p-6 shadow-lg focus:outline-none'>
@@ -731,7 +726,6 @@ export default function EmbeddedWalletAltUi() {
 								}}>
 								<Dialog.Portal>
 									<motion.div
-										variants={overlayVariants}
 										initial='hidden'
 										animate='visible'
 										className='fixed inset-0 bg-black/40 backdrop-blur-sm z-50'
@@ -742,7 +736,6 @@ export default function EmbeddedWalletAltUi() {
 									<div className='fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-screen max-w-[450px] z-50'>
 										<Dialog.Content asChild>
 											<motion.div
-												variants={modalVariants}
 												initial='hidden'
 												animate='visible'
 												className='rounded-xl bg-[#1a1a1a] border border-[#4B5563]/40 p-5 shadow-lg focus:outline-none'>
@@ -929,7 +922,6 @@ export default function EmbeddedWalletAltUi() {
 								}}>
 								<Dialog.Portal>
 									<motion.div
-										variants={overlayVariants}
 										initial='hidden'
 										animate='visible'
 										className='fixed inset-0 bg-black/40 backdrop-blur-sm z-50'
@@ -940,7 +932,6 @@ export default function EmbeddedWalletAltUi() {
 									<div className='fixed top-[50%] left-[50%] -translate-x-1/2 -translate-y-1/2 w-screen max-w-[450px] z-50'>
 										<Dialog.Content asChild>
 											<motion.div
-												variants={modalVariants}
 												initial='hidden'
 												animate='visible'
 												className='rounded-xl bg-[#1a1a1a] border border-[#4B5563]/40 p-5 shadow-lg focus:outline-none'>
@@ -1254,13 +1245,9 @@ export default function EmbeddedWalletAltUi() {
 												variants={containerVariants}
 												initial='hidden'
 												animate='visible'>
-												<motion.div
-													className='grow relative flex flex-col'
-													variants={sectionVariants}>
+												<motion.div className='grow relative flex flex-col'>
 													{/* USER INFO */}
-													<motion.div
-														className='flex items-center space-x-2'
-														variants={sectionVariants}>
+													<motion.div className='flex items-center space-x-2'>
 														{renderDrawerUserImage()}
 														<div className='flex flex-col'>
 															<Dialog.Title className='font-bold text-lg text-neutral-50'>
@@ -1307,9 +1294,7 @@ export default function EmbeddedWalletAltUi() {
 													<div className='h-px w-full my-4' />
 
 													{/* BALANCE */}
-													<motion.section
-														className='flex flex-col'
-														variants={sectionVariants}>
+													<motion.section className='flex flex-col'>
 														<p className='text-xs text-neutral-300'>
 															Account balance:
 														</p>
@@ -1390,11 +1375,9 @@ export default function EmbeddedWalletAltUi() {
 													<div className='grow' />
 
 													{/* ADVANCED OPTIONS */}
-													<motion.section
-														className='w-full relative'
-														variants={sectionVariants}>
+													<motion.section className='w-full relative'>
 														<motion.button
-															onClick={(e) => {
+															onClick={(e: any) => {
 																e.stopPropagation();
 																toggleAdvanced(e);
 															}}
@@ -1425,12 +1408,10 @@ export default function EmbeddedWalletAltUi() {
 																	initial='hidden'
 																	animate='visible'
 																	exit='hidden'
-																	variants={menuVariants}
 																	className='absolute bottom-full left-0 right-0 mb-1 flex flex-col space-y-3 bg-[#090909]/95 backdrop-blur-sm border border-[#4B5563]/30 rounded-xl p-2 shadow-lg'
-																	onClick={(e) => e.stopPropagation()}>
+																	onClick={(e: any) => e.stopPropagation()}>
 																	<motion.div
 																		className='group rounded-lg relative outline-none'
-																		variants={buttonVariants}
 																		custom={0}>
 																		<a
 																			href={`https://sepolia.basescan.org/address/${session.user.ethereumAddress}`}
@@ -1458,7 +1439,6 @@ export default function EmbeddedWalletAltUi() {
 																	{/* Delete Account Button */}
 																	<motion.div
 																		className='group rounded-lg relative outline-none'
-																		variants={buttonVariants}
 																		custom={1}>
 																		<button
 																			onClick={(e) => {
@@ -1489,7 +1469,6 @@ export default function EmbeddedWalletAltUi() {
 																	{/* Export Private Key */}
 																	<motion.div
 																		className='group rounded-lg relative outline-none'
-																		variants={buttonVariants}
 																		custom={2}>
 																		<button
 																			className='inline-flex justify-center w-full text-[12px] items-center font-medium space-x-1 text-red-500'
@@ -1521,9 +1500,7 @@ export default function EmbeddedWalletAltUi() {
 
 													<div className='h-px w-full mb-4 mt-2 bg-linear-to-r from-[#4B5563]/0 via-[#4B5563]/40 to-[#4B5563]/0' />
 
-													<motion.section
-														className='w-full mt-auto'
-														variants={sectionVariants}>
+													<motion.section className='w-full mt-auto'>
 														<div className='flex items-center justify-between mb-3'>
 															<p className='text-xs text-neutral-300'>
 																You signed in with
@@ -1534,9 +1511,7 @@ export default function EmbeddedWalletAltUi() {
 														</div>
 													</motion.section>
 													{/* LOGOUT */}
-													<motion.section
-														className='w-full mt-auto'
-														variants={sectionVariants}>
+													<motion.section className='w-full mt-auto'>
 														<button
 															onClick={handleSignOut}
 															className='inline-flex justify-center space-x-1 w-full text-sm py-2 px-3 items-center border border-[#4B5563]/40 rounded-xl font-medium bg-white/10 text-neutral-100 shadow-md'>

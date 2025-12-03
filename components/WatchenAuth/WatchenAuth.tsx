@@ -288,7 +288,7 @@ export default function WatchenAuth({ providers, img }: WatchenAuthProps) {
 											recentProvider &&
 											sortedProviders.some((p) => p.id === recentProvider) && (
 												<div className='flex items-center'>
-													<div className='flex-grow h-px bg-gray-200 mx-0.5' />
+													<div className='grow h-px bg-gray-200 mx-0.5' />
 												</div>
 											)}
 										{sortedProviders
@@ -309,11 +309,11 @@ export default function WatchenAuth({ providers, img }: WatchenAuthProps) {
 									{selectedProviders.includes('wallet') && (
 										<>
 											<div className='flex items-center my-4'>
-												<div className='flex-grow h-px bg-gray-200' />
+												<div className='grow h-px bg-gray-200' />
 												<span className='mx-3 text-xs text-neutral-400'>
 													OR
 												</span>
-												<div className='flex-grow h-px bg-gray-200' />
+												<div className='grow h-px bg-gray-200' />
 											</div>
 											<button
 												onClick={() => setShowWallets(true)}
